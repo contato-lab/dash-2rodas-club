@@ -1,5 +1,5 @@
 {
-  "updated": "23/05/2026 15:54",
+  "updated": "23/05/2026 21:43",
   "account": "LIME | Duas Rodas Novo",
   "data": [
     {
@@ -1206,12 +1206,12 @@
       "data": "22/05",
       "leads": 0,
       "compras": 8,
-      "gasto": 398.86,
+      "gasto": 399.06,
       "cpl": null,
-      "cpp": 49.86,
+      "cpp": 49.88,
       "valorConv": 1305.8,
-      "impressoes": 34834,
-      "alcance": 17673,
+      "impressoes": 34855,
+      "alcance": 17699,
       "cliques": 581,
       "atc": 26,
       "lpViews": 67,
@@ -1220,17 +1220,17 @@
     {
       "data": "23/05",
       "leads": 0,
-      "compras": 4,
-      "gasto": 183.68,
+      "compras": 8,
+      "gasto": 314.11,
       "cpl": null,
-      "cpp": 45.92,
-      "valorConv": 496.7,
-      "impressoes": 16888,
-      "alcance": 10621,
-      "cliques": 276,
-      "atc": 15,
-      "lpViews": 34,
-      "checkout": 5
+      "cpp": 39.26,
+      "valorConv": 1074.5,
+      "impressoes": 30322,
+      "alcance": 16541,
+      "cliques": 485,
+      "atc": 27,
+      "lpViews": 56,
+      "checkout": 12
     }
   ]
 }
