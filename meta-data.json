@@ -1,5 +1,5 @@
 {
-  "updated": "08/06/2026 12:57",
+  "updated": "08/06/2026 17:42",
   "account": "LIME | Duas Rodas Novo",
   "data": [
     {
@@ -1431,11 +1431,11 @@
       "data": "06/06",
       "leads": 0,
       "compras": 13,
-      "gasto": 754.19,
+      "gasto": 754.23,
       "cpl": null,
-      "cpp": 58.01,
+      "cpp": 58.02,
       "valorConv": 3133.26,
-      "impressoes": 82470,
+      "impressoes": 82472,
       "alcance": 34960,
       "cliques": 1042,
       "atc": 60,
@@ -1446,12 +1446,12 @@
       "data": "07/06",
       "leads": 0,
       "compras": 16,
-      "gasto": 826.46,
+      "gasto": 826.84,
       "cpl": null,
-      "cpp": 51.65,
+      "cpp": 51.68,
       "valorConv": 4569.63,
-      "impressoes": 84855,
-      "alcance": 38961,
+      "impressoes": 84899,
+      "alcance": 39008,
       "cliques": 1352,
       "atc": 74,
       "lpViews": 153,
@@ -1460,17 +1460,17 @@
     {
       "data": "08/06",
       "leads": 0,
-      "compras": 2,
-      "gasto": 161.1,
+      "compras": 5,
+      "gasto": 296.66,
       "cpl": null,
-      "cpp": 80.55,
-      "valorConv": 875.0,
-      "impressoes": 15055,
-      "alcance": 9870,
-      "cliques": 272,
-      "atc": 7,
-      "lpViews": 52,
-      "checkout": 3
+      "cpp": 59.33,
+      "valorConv": 1562.5,
+      "impressoes": 28396,
+      "alcance": 15613,
+      "cliques": 407,
+      "atc": 20,
+      "lpViews": 62,
+      "checkout": 7
     }
   ]
 }
