@@ -975,7 +975,7 @@ function renderFunnel(mf) {
 function renderInsight() {
   const box = document.getElementById('insightBox'), el = document.getElementById('insightText');
   box.classList.remove('warn');
-  if (VENDAS_CSV_URL === 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTt0m0xIhw8529T79-mAGZZ9WPGNC2XFvhl7PvrNspCpZmY_AgWaLeN2-RD4pVWUQLApxQg5oAE9nI9/pub?output=csv') {
+  if (!VENDAS_CSV_URL || VENDAS_CSV_URL.startsWith('COLE_AQUI')) {
     box.classList.add('warn');
     el.innerHTML = 'Planilha de vendas ainda não conectada. Publique a planilha como CSV e cole o link em <code>CONFIG.vendasCsvUrl</code> no HTML.';
     return;
