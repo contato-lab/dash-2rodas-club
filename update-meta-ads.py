@@ -2,13 +2,13 @@
 update-meta-ads.py
 Chama a API do Meta Ads e salva meta-data.json
 Roda diariamente via GitHub Actions
-Conta: [LIME] [DUAS RODAS NOVO] — act_1326431289216611
+Conta: Duas Rodas — act_2044706169171045 (informada pelo Eric em 05/11/2026)
 """
 import json, os, urllib.request, urllib.parse
 from datetime import datetime, date
 
 TOKEN    = os.environ['META_TOKEN']
-ACCT     = os.environ.get('META_ACCT', 'act_1326431289216611')
+ACCT     = os.environ.get('META_ACCT', 'act_2044706169171045')
 OUT_FILE = 'meta-data.json'
 FIELDS   = 'date_start,spend,impressions,reach,clicks,actions,action_values,cost_per_action_type'
 
@@ -33,17 +33,24 @@ def get_cpp(cpa, action_type):
             return round(float(a.get('value', 0)), 2)
     return None
 
-since = '2026-01-01'
+since = os.environ.get('META_SINCE', '2026-10-01')   # início das vendas da temporada
 until = date.today().strftime('%Y-%m-%d')
 
-params = urllib.parse.urlencode({
+# Opcional: só campanhas cujo nome contenha este texto (ex.: "2RODAS").
+# Vazio = conta inteira, igual ao FanFest.
+CAMPAIGN_CONTAINS = os.environ.get('META_CAMPAIGN_CONTAINS', '').strip()
+
+query = {
     'fields':         FIELDS,
     'time_increment': '1',
     'time_range':     json.dumps({'since': since, 'until': until}),
     'level':          'account',
     'limit':          '90',
     'access_token':   TOKEN,
-})
+}
+if CAMPAIGN_CONTAINS:
+    query['filtering'] = json.dumps([{'field': 'campaign.name', 'operator': 'CONTAIN', 'value': CAMPAIGN_CONTAINS}])
+params = urllib.parse.urlencode(query)
 
 url = f'https://graph.facebook.com/v20.0/{ACCT}/insights?{params}'
 all_data = []
@@ -59,6 +66,7 @@ for day in all_data:
     p = day['date_start'].split('-')   # YYYY-MM-DD → DD/MM
     parsed.append({
         'data':       f"{p[2]}/{p[1]}",
+        'dataISO':    day['date_start'],   # YYYY-MM-DD, pra temporada que cruza o ano
         'leads':      get_action_count(day.get('actions'),         'lead'),
         'compras':    get_action_count(day.get('actions'),         'purchase'),
         'gasto':      round(float(day.get('spend', 0)), 2),
@@ -75,7 +83,8 @@ for day in all_data:
 
 output = {
     'updated': datetime.now().strftime('%d/%m/%Y %H:%M'),
-    'account': 'LIME | Duas Rodas Novo',
+    'account': 'Duas Rodas | ' + ACCT,
+    'filtro':  CAMPAIGN_CONTAINS or 'conta inteira',
     'data':    parsed,
 }
 
