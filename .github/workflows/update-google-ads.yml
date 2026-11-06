@@ -1,0 +1,46 @@
+name: Atualizar Google Ads — 2 Rodas Club
+
+on:
+  schedule:
+    - cron: '20 9,15,21 * * *'   # 3x ao dia, 20 min depois do robô do Meta pra não brigar no push
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar biblioteca do Google Ads
+        run: pip install google-ads
+
+      - name: Buscar dados do Google Ads
+        env:
+          GOOGLE_ADS_DEVELOPER_TOKEN:   ${{ secrets.GOOGLE_ADS_DEVELOPER_TOKEN }}
+          GOOGLE_ADS_CLIENT_ID:         ${{ secrets.GOOGLE_ADS_CLIENT_ID }}
+          GOOGLE_ADS_CLIENT_SECRET:     ${{ secrets.GOOGLE_ADS_CLIENT_SECRET }}
+          GOOGLE_ADS_REFRESH_TOKEN:     ${{ secrets.GOOGLE_ADS_REFRESH_TOKEN }}
+          GOOGLE_ADS_CUSTOMER_ID:       '5879952911'   # Duas Rodas (587-995-2911)
+          GOOGLE_ADS_LOGIN_CUSTOMER_ID: '4736269396'   # MCC da Lime
+          GOOGLE_ADS_SINCE:             '2026-10-01'
+          GOOGLE_ADS_CAMPAIGN_CONTAINS: ''             # ex.: '2RODAS' pra ler só as campanhas do camarote; vazio = conta inteira
+        run: python update-google-ads.py
+
+      - name: Commitar google-ads-data.json atualizado
+        run: |
+          git config user.name  "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add google-ads-data.json
+          git diff --staged --quiet && exit 0
+          git commit -m "Google Ads: $(date +'%d/%m/%Y %H:%M')"
+          git pull --rebase origin main || true
+          git push
