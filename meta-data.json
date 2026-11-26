@@ -1,5 +1,5 @@
 {
-  "updated": "26/11/2026 03:25",
+  "updated": "26/11/2026 18:53",
   "account": "Duas Rodas | act_2044706169171045",
   "filtro": "conta inteira",
   "data": [
@@ -360,13 +360,13 @@
       "dataISO": "2026-11-26",
       "leads": 0,
       "compras": 0,
-      "gasto": 4.29,
+      "gasto": 26.38,
       "cpl": null,
       "cpp": null,
       "valorConv": 0.0,
-      "impressoes": 304,
-      "alcance": 253,
-      "cliques": 14,
+      "impressoes": 2089,
+      "alcance": 1691,
+      "cliques": 68,
       "atc": 0,
       "lpViews": 0,
       "checkout": 0
