@@ -42,7 +42,11 @@
     }
     .header-brand { display: flex; align-items: center; gap: 12px; }
     .lime-logo { display: flex; align-items: center; }
-    .lime-logo svg { height: 38px; width: auto; }
+    .lime-logo img { height: 44px; width: auto; display: block; }
+    .club-logo img { height: 34px; width: auto; display: block; }
+    .footer-logos { display: flex; align-items: center; gap: 14px; }
+    .footer-logos img.f-lime { height: 34px; width: auto; display: block; }
+    .footer-logos img.f-club { height: 26px; width: auto; display: block; }
     .header-sep { color: #444; font-size: 1.3rem; }
     .header-client { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; color: #BBBBBB; letter-spacing: 0.06em; text-transform: uppercase; }
     .header-center { text-align: center; flex: 1; }
@@ -228,8 +232,9 @@
       footer { flex-direction: column; gap: 6px; text-align: center; }
 
       .header { padding: 8px 14px; flex-wrap: nowrap; gap: 8px; align-items: center; }
-      .lime-logo svg { height: 26px; }
-      .header-sep, .header-client { display: none; }
+      .lime-logo img { height: 30px; }
+      .club-logo img { height: 22px; }
+      .header-sep { display: none; }
       .header-center { min-width: 0; }
       .title-full, .subtitle-full { display: none; }
       .title-short, .subtitle-short { display: inline; }
@@ -282,17 +287,12 @@
 <!-- HEADER -->
 <header class="header">
   <div class="header-brand">
-    <span class="lime-logo">
-      <svg viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lime">
-        <rect x="0" y="0" width="110" height="44" rx="10" ry="10" fill="#0A0A0A"/>
-        <text x="55" y="32" font-family="'Barlow Condensed', Arial Black, sans-serif" font-weight="900" font-size="28" fill="#D5FE00" text-anchor="middle" letter-spacing="3">LIME</text>
-      </svg>
-    </span>
+    <span class="lime-logo"><img src="logo-lime.png" alt="Lime" width="240" height="221"></span>
     <span class="header-sep">|</span>
-    <span class="header-client">Duas Rodas</span>
+    <span class="club-logo"><img src="logo-2rodasclub.png" alt="2Rodas Club" width="600" height="220"></span>
   </div>
   <div class="header-center">
-    <h1 class="header-title"><span class="title-full">2Rodas Club — Dashboard de Vendas</span><span class="title-short">2Rodas Club</span></h1>
+    <h1 class="header-title"><span class="title-full">2Rodas Club — Dashboard de Vendas</span><span class="title-short">Vendas</span></h1>
     <p class="header-subtitle"><span class="subtitle-full" id="subtitleFull">MotoGP Brasil 2027 · vendas do site · Meta Ads · Google Ads</span><span class="subtitle-short">Site · Meta · Google</span></p>
   </div>
   <div class="header-right">
@@ -480,12 +480,7 @@
 </main>
 
 <footer>
-  <span class="footer-lime">
-    <svg viewBox="0 0 88 34" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="88" height="34" rx="8" ry="8" fill="#0A0A0A"/>
-      <text x="44" y="25" font-family="'Barlow Condensed', Arial Black, sans-serif" font-weight="900" font-size="22" fill="#D5FE00" text-anchor="middle" letter-spacing="2">LIME</text>
-    </svg>
-  </span>
+  <span class="footer-logos"><img class="f-lime" src="logo-lime.png" alt="Lime" width="240" height="221"><img class="f-club" src="logo-2rodasclub.png" alt="2Rodas Club" width="600" height="220"></span>
   <span class="footer-tagline">Transformamos caos em crescimento · Branding · Performance · Conteúdo · Experiência</span>
   <span class="footer-tagline">Gerado em <span id="footerDate"></span></span>
 </footer>
