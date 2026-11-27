@@ -308,6 +308,7 @@
   <div class="filter-bar">
     <span class="filter-label-main">Período</span>
     <div class="filter-shortcuts">
+      <button class="btn-filter" id="btn-hoje" onclick="setPreset('hoje')">Hoje</button>
       <button class="btn-filter" id="btn-7d"   onclick="setPreset('7d')">7 Dias</button>
       <button class="btn-filter" id="btn-14d"  onclick="setPreset('14d')">14 Dias</button>
       <button class="btn-filter" id="btn-30d"  onclick="setPreset('30d')">30 Dias</button>
@@ -876,6 +877,7 @@ function setPreset(id) {
   const today = new Date(); today.setHours(0,0,0,0);
   const daysAgo = n => { const d = new Date(today); d.setDate(d.getDate() - n); return d; };
   let from, to = today;
+  if (id === 'hoje') from = today;
   if (id === '7d')  from = daysAgo(6);
   if (id === '14d') from = daysAgo(13);
   if (id === '30d') from = daysAgo(29);
