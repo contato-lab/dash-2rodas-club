@@ -1,5 +1,5 @@
 {
-  "updated": "27/11/2026 03:33",
+  "updated": "27/11/2026 18:34",
   "account": "Duas Rodas | act_2044706169171045",
   "filtro": "conta inteira",
   "data": [
@@ -360,11 +360,11 @@
       "dataISO": "2026-11-26",
       "leads": 0,
       "compras": 0,
-      "gasto": 60.46,
+      "gasto": 60.58,
       "cpl": null,
       "cpp": null,
       "valorConv": 0.0,
-      "impressoes": 4084,
+      "impressoes": 4085,
       "alcance": 3305,
       "cliques": 157,
       "atc": 7,
@@ -376,16 +376,33 @@
       "dataISO": "2026-11-27",
       "leads": 0,
       "compras": 0,
-      "gasto": 2.96,
+      "gasto": 34.14,
       "cpl": null,
       "cpp": null,
       "valorConv": 0.0,
-      "impressoes": 63,
-      "alcance": 51,
-      "cliques": 6,
+      "impressoes": 1074,
+      "alcance": 867,
+      "cliques": 27,
       "atc": 0,
-      "lpViews": 2,
+      "lpViews": 23,
       "checkout": 0
     }
-  ]
+  ],
+  "pixel": [
+    {
+      "dataISO": "2026-11-26",
+      "viewContent": 30,
+      "addToCart": 50,
+      "initiateCheckout": 6,
+      "purchase": 6
+    },
+    {
+      "dataISO": "2026-11-27",
+      "viewContent": 22,
+      "addToCart": 38,
+      "initiateCheckout": 0,
+      "purchase": 0
+    }
+  ],
+  "pixelErro": null
 }
