@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2 Rodas Club — Dashboard Lime</title>
+  <title>2Rodas Club — Dashboard de Vendas</title>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
@@ -247,6 +247,34 @@
       .kpi-sub    { font-size: 0.63rem; margin-top: 3px; line-height: 1.3; }
       .kpi-watermark { font-size: 1.8rem; right: 8px; bottom: 6px; }
     }
+
+    /* ── INGRESSOS (v2) ── */
+    .tk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .tk-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; position: relative; overflow: hidden; transition: border-color .2s, background .2s; border-top: 3px solid var(--tk, var(--lime)); }
+    .tk-card:hover { border-color: var(--lime-border); background: var(--bg-card-hover); }
+    .tk-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1.15; min-height: 2.3em; }
+    .tk-price { font-size: 0.7rem; color: #999; margin-top: 2px; }
+    .tk-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-top: 12px; }
+    .tk-qtd { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 2.3rem; line-height: 1; color: var(--tk, var(--lime)); }
+    .tk-qtd small { font-size: 0.85rem; color: #888; font-weight: 700; margin-left: 4px; }
+    .tk-rec { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.05rem; color: #EEE; text-align: right; }
+    .tk-bar { height: 8px; background: #1F1F1F; border-radius: 8px; overflow: hidden; margin-top: 12px; }
+    .tk-fill { height: 100%; width: 0; border-radius: 8px; background: var(--tk, var(--lime)); transition: width .8s ease; }
+    .tk-sub { font-size: 0.7rem; color: #888; margin-top: 7px; display: flex; justify-content: space-between; gap: 8px; }
+
+    /* ── FUNIL DO SITE (v2) ── */
+    .sf { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .sf-step { position: relative; background: #1A1A1A; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px 16px 16px; overflow: hidden; }
+    .sf-step::before { content: ''; position: absolute; left: 0; bottom: 0; height: 4px; width: var(--w, 0%); background: var(--lime); opacity: .85; transition: width .8s ease; }
+    .sf-label { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.72rem; color: #AAA; text-transform: uppercase; letter-spacing: 0.08em; }
+    .sf-value { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 2.1rem; line-height: 1.05; margin-top: 6px; }
+    .sf-step.final .sf-value { color: var(--lime); }
+    .sf-rate { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.78rem; color: var(--lime); margin-top: 6px; }
+    .sf-hint { font-size: 0.68rem; color: #888; margin-top: 3px; }
+    .sf-note { font-size: 0.7rem; color: #888; margin-top: 14px; }
+
+    @media (max-width: 1100px) { .tk-grid, .sf { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px)  { .tk-grid { grid-template-columns: 1fr 1fr; } .tk-qtd { font-size: 1.8rem; } .sf-value { font-size: 1.7rem; } }
   </style>
 </head>
 <body>
@@ -264,8 +292,8 @@
     <span class="header-client">Duas Rodas</span>
   </div>
   <div class="header-center">
-    <h1 class="header-title"><span class="title-full">2 Rodas Club — Dashboard de Vendas</span><span class="title-short">2 Rodas Club</span></h1>
-    <p class="header-subtitle"><span class="subtitle-full" id="subtitleFull">Camarote Duas Rodas · Eventim (planilha) · Meta Ads · Google Ads</span><span class="subtitle-short">Eventim · Meta · Google</span></p>
+    <h1 class="header-title"><span class="title-full">2Rodas Club — Dashboard de Vendas</span><span class="title-short">2Rodas Club</span></h1>
+    <p class="header-subtitle"><span class="subtitle-full" id="subtitleFull">MotoGP Brasil 2027 · vendas do site · Meta Ads · Google Ads</span><span class="subtitle-short">Site · Meta · Google</span></p>
   </div>
   <div class="header-right">
     <span class="period-badge" id="periodBadge">—</span>
@@ -296,96 +324,114 @@
     </div>
   </div>
 
-  <!-- INSIGHT (gerado a partir dos dados) -->
   <div class="insight-box" id="insightBox">
     <span class="insight-icon">✱</span>
     <p class="insight-text" id="insightText">Carregando dados…</p>
   </div>
 
-  <!-- HERO KPIS -->
+  <!-- KPIs -->
   <div class="section-header">
     <p class="section-title">Visão Geral do Período</p>
-    <p class="section-desc">Consolidado do período selecionado — vendas lançadas da Eventim + Meta Ads + Google Ads</p>
+    <p class="section-desc">Vendas pagas no site (Wix) + investimento em Meta Ads e Google Ads</p>
   </div>
   <div class="kpi-hero">
     <div class="kpi-card lime">
       <p class="kpi-label">Ingressos Vendidos</p>
       <p class="kpi-value" id="cnt-ingressos">–</p>
-      <p class="kpi-sub" id="kpi-ingressos-sub">Eventim (planilha)</p>
+      <p class="kpi-sub" id="kpi-ingressos-sub">Pedidos pagos no site</p>
       <span class="kpi-watermark">🎟</span>
     </div>
     <div class="kpi-card lime">
-      <p class="kpi-label">Receita</p>
+      <p class="kpi-label">Valor Vendido</p>
       <p class="kpi-value lime-color" id="cnt-receita">–</p>
-      <p class="kpi-sub" id="kpi-receita-sub">Quantidade × valor unitário</p>
+      <p class="kpi-sub" id="kpi-receita-sub">Sem a taxa de serviço do comprador</p>
       <span class="kpi-watermark">R$</span>
     </div>
     <div class="kpi-card purple">
       <p class="kpi-label">Investimento em Mídia</p>
       <p class="kpi-value" id="cnt-invest">–</p>
       <p class="kpi-sub" id="kpi-invest-split">Meta Ads + Google Ads</p>
-      <p class="kpi-sub" id="kpi-invest-sub"></p>
       <span class="kpi-watermark">📊</span>
     </div>
     <div class="kpi-card purple">
-      <p class="kpi-label">Compras rastreadas pelo Meta</p>
-      <p class="kpi-value" id="cnt-compras">–</p>
-      <p class="kpi-sub" id="kpi-valor-conv" style="color:var(--lime);font-weight:700;font-size:0.82rem;margin-bottom:4px;"></p>
-      <p class="kpi-sub" id="kpi-cpp-sub">Custo por compra: —</p>
+      <p class="kpi-label">Retorno sobre a Mídia</p>
+      <p class="kpi-value" id="cnt-roas">–</p>
+      <p class="kpi-sub" id="kpi-roas-sub">Valor vendido ÷ investimento</p>
+      <span class="kpi-watermark">×</span>
     </div>
   </div>
 
-  <!-- META DE VENDAS -->
+  <!-- INGRESSOS -->
   <div class="section-header">
-    <p class="section-title">Meta de Vendas da Temporada</p>
-    <p class="section-desc">Acumulado desde a primeira venda lançada, independente do filtro de período</p>
+    <p class="section-title">Vendas por Ingresso</p>
+    <p class="section-desc">Quantidade e valor no período selecionado · barra = ocupação da lotação na temporada inteira</p>
   </div>
-  <div class="goal-grid">
-    <div class="goal-card lime">
-      <div class="goal-head"><span class="goal-name" id="goal-club-name">2Rodas Club</span><span class="goal-pct" id="goal-club-pct">0%</span></div>
-      <div class="goal-bar"><div class="goal-fill" id="goal-club-fill"></div></div>
-      <div class="goal-sub"><span id="goal-club-sold">0 vendidos</span><span id="goal-club-left">meta: —</span></div>
+  <div class="tk-grid" id="tkGrid"></div>
+
+  <!-- FUNIL DO SITE -->
+  <div class="section-header">
+    <p class="section-title">Funil de Vendas do Site</p>
+    <p class="section-desc">Todo mundo que passou pela compra, venha de anúncio, Instagram ou busca · período selecionado</p>
+  </div>
+  <div class="funnel-wrap">
+    <div class="sf">
+      <div class="sf-step" id="sf1"><p class="sf-label">Página de compra</p><p class="sf-value" id="sf-vc">—</p><p class="sf-rate">100%</p><p class="sf-hint">viram a página do evento</p></div>
+      <div class="sf-step" id="sf2"><p class="sf-label">Carrinho</p><p class="sf-value" id="sf-atc">—</p><p class="sf-rate" id="sf-atc-r">—</p><p class="sf-hint">escolheram ingresso</p></div>
+      <div class="sf-step" id="sf3"><p class="sf-label">Checkout</p><p class="sf-value" id="sf-chk">—</p><p class="sf-rate" id="sf-chk-r">—</p><p class="sf-hint">preencheram os dados</p></div>
+      <div class="sf-step final" id="sf4"><p class="sf-label">Compras pagas</p><p class="sf-value" id="sf-buy">—</p><p class="sf-rate" id="sf-buy-r">—</p><p class="sf-hint">pedidos confirmados no Wix</p></div>
     </div>
-    <div class="goal-card purple">
-      <div class="goal-head"><span class="goal-name" id="goal-lounge-name">Lounge Diogo Moreira</span><span class="goal-pct" id="goal-lounge-pct">0%</span></div>
-      <div class="goal-bar"><div class="goal-fill" id="goal-lounge-fill"></div></div>
-      <div class="goal-sub"><span id="goal-lounge-sold">0 vendidos</span><span id="goal-lounge-left">meta: —</span></div>
-    </div>
+    <p class="sf-note" id="sf-note">Etapas 1 a 3 pelo pixel da Meta no site; compras pelos pedidos pagos do Wix.</p>
   </div>
 
   <!-- TIMELINE -->
   <div class="section-header">
     <p class="section-title">Linha do Tempo de Vendas</p>
-    <p class="section-desc">Ingressos lançados por dia — marcos de campanha destacados</p>
+    <p class="section-desc">Ingressos vendidos por dia, por tipo · marcos da campanha destacados</p>
   </div>
   <div class="chart-card">
     <div class="chart-title">Ingressos Vendidos por Dia</div>
-    <p class="chart-sub" id="tl-sub">Fonte: planilha Eventim</p>
-    <div class="phase-legend">
-      <div class="phase-item"><div class="phase-dot lime"></div><span id="lg-club">2Rodas Club</span></div>
-      <div class="phase-item"><div class="phase-dot other"></div><span id="lg-lounge">Lounge Diogo Moreira</span></div>
-    </div>
-    <div class="chart-wrapper" style="height:340px;" id="tlWrap"><canvas id="timelineChart"></canvas><div class="chart-empty">Nenhuma venda lançada no período selecionado.</div></div>
+    <p class="chart-sub" id="tl-sub">Fonte: pedidos pagos no site</p>
+    <div class="phase-legend" id="tlLegend"></div>
+    <div class="chart-wrapper" style="height:320px;" id="tlWrap"><canvas id="timelineChart"></canvas><div class="chart-empty">Nenhuma venda paga no período selecionado.</div></div>
   </div>
 
-  <!-- ACUMULADO vs META -->
-  <div class="chart-card">
-    <div class="chart-title">Acumulado × Meta</div>
-    <p class="chart-sub">Soma desde a primeira venda, mostrada no período selecionado · linha tracejada = meta</p>
-    <div class="chart-wrapper" style="height:300px;" id="cumWrap"><canvas id="cumChart"></canvas><div class="chart-empty">Nenhuma venda lançada no período selecionado.</div></div>
-  </div>
-
-  <!-- DUAL CHARTS -->
   <div class="grid-2">
     <div class="chart-card" style="margin-bottom:0;">
-      <div class="chart-title">Gasto vs. Compras — Meta + Google</div>
-      <p class="chart-sub">Barras empilhadas = gasto por plataforma · linha = compras rastreadas pelo Meta</p>
-      <div class="chart-wrapper" style="height:280px;" id="spendWrap"><canvas id="spendChart"></canvas><div class="chart-empty">Sem dados de mídia no período.</div></div>
+      <div class="chart-title">Valor Vendido Acumulado</div>
+      <p class="chart-sub">Soma desde a primeira venda, mostrada no período selecionado</p>
+      <div class="chart-wrapper" style="height:280px;" id="cumWrap"><canvas id="cumChart"></canvas><div class="chart-empty">Nenhuma venda paga no período selecionado.</div></div>
     </div>
     <div class="chart-card" style="margin-bottom:0;">
-      <div class="chart-title">Custo por Compra — Meta Ads</div>
-      <p class="chart-sub">Dias com compra rastreada · linha tracejada = média do período</p>
-      <div class="chart-wrapper" style="height:280px;" id="cppWrap"><canvas id="cppChart"></canvas><div class="chart-empty">Nenhuma compra rastreada pelo Meta no período.</div></div>
+      <div class="chart-title">Gasto em Mídia × Vendas</div>
+      <p class="chart-sub">Barras = gasto por plataforma · linha = ingressos vendidos</p>
+      <div class="chart-wrapper" style="height:280px;" id="spendWrap"><canvas id="spendChart"></canvas><div class="chart-empty">Sem dados de mídia no período.</div></div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Funil por Dia</div>
+    <p class="chart-sub">Página de compra, carrinho e checkout (pixel) e compras pagas (Wix), dia a dia</p>
+    <div class="chart-wrapper" style="height:260px;" id="fdWrap"><canvas id="funilDiaChart"></canvas><div class="chart-empty">O pixel ainda não tem dados neste período.</div></div>
+  </div>
+
+  <!-- META FUNNEL -->
+  <div class="section-header">
+    <p class="section-title">Funil dos Anúncios — Meta Ads</p>
+    <p class="section-desc">Só quem veio dos anúncios da Meta, do anúncio à compra · período selecionado</p>
+  </div>
+  <div class="funnel-wrap">
+    <div class="funnel">
+      <div class="funnel-step"><p class="funnel-label">Impressões</p><p class="funnel-value" id="fn-imp">—</p><p class="funnel-rate">100%</p></div>
+      <span class="funnel-arrow">›</span>
+      <div class="funnel-step"><p class="funnel-label">Cliques</p><p class="funnel-value" id="fn-clk">—</p><p class="funnel-rate" id="fn-clk-rate">CTR —</p></div>
+      <span class="funnel-arrow">›</span>
+      <div class="funnel-step"><p class="funnel-label">Visitas à página</p><p class="funnel-value" id="fn-lp">—</p><p class="funnel-rate" id="fn-lp-rate">—</p></div>
+      <span class="funnel-arrow">›</span>
+      <div class="funnel-step"><p class="funnel-label">Carrinho</p><p class="funnel-value" id="fn-atc">—</p><p class="funnel-rate" id="fn-atc-rate">—</p></div>
+      <span class="funnel-arrow">›</span>
+      <div class="funnel-step"><p class="funnel-label">Checkout</p><p class="funnel-value" id="fn-chk">—</p><p class="funnel-rate" id="fn-chk-rate">—</p></div>
+      <span class="funnel-arrow">›</span>
+      <div class="funnel-step"><p class="funnel-label">Compras</p><p class="funnel-value lime-color" id="fn-buy">—</p><p class="funnel-rate" id="fn-buy-rate">—</p></div>
     </div>
   </div>
 
@@ -395,12 +441,12 @@
     <p class="section-desc" id="meta-desc">Totais do período selecionado</p>
   </div>
   <div class="meta-grid">
+    <div class="meta-card"><p class="meta-label">Investimento</p><p class="meta-value" id="mc-gasto">—</p></div>
     <div class="meta-card"><p class="meta-label">Impressões</p><p class="meta-value" id="mc-imp">—</p></div>
     <div class="meta-card"><p class="meta-label">Alcance</p><p class="meta-value" id="mc-alc">—</p></div>
     <div class="meta-card"><p class="meta-label">Cliques</p><p class="meta-value" id="mc-clk">—</p></div>
     <div class="meta-card"><p class="meta-label">CTR</p><p class="meta-value" id="mc-ctr">—</p></div>
     <div class="meta-card"><p class="meta-label">CPM</p><p class="meta-value" id="mc-cpm">—</p></div>
-    <div class="meta-card"><p class="meta-label">Frequência</p><p class="meta-value" id="mc-freq">—</p></div>
   </div>
 
   <!-- GOOGLE CARDS -->
@@ -417,49 +463,15 @@
     <div class="meta-card"><p class="meta-label">Conversões</p><p class="meta-value" id="gc-conv">—</p><p class="kpi-sub" id="gc-cpa"></p></div>
   </div>
 
-  <!-- FUNIL -->
-  <div class="section-header">
-    <p class="section-title">Funil de Conversão — Meta Ads</p>
-    <p class="section-desc">Do anúncio à compra rastreada pelo pixel · período selecionado</p>
-  </div>
-  <div class="funnel-wrap">
-    <div class="funnel">
-      <div class="funnel-step"><p class="funnel-label">Impressões</p><p class="funnel-value" id="fn-imp">—</p><p class="funnel-rate" id="fn-imp-rate">100%</p></div>
-      <span class="funnel-arrow">›</span>
-      <div class="funnel-step"><p class="funnel-label">Cliques</p><p class="funnel-value" id="fn-clk">—</p><p class="funnel-rate" id="fn-clk-rate">CTR —%</p></div>
-      <span class="funnel-arrow">›</span>
-      <div class="funnel-step"><p class="funnel-label">Visitas à página</p><p class="funnel-value" id="fn-lp">—</p><p class="funnel-rate" id="fn-lp-rate">—% dos cliques</p></div>
-      <span class="funnel-arrow">›</span>
-      <div class="funnel-step"><p class="funnel-label">Adicionou ao carrinho</p><p class="funnel-value" id="fn-atc">—</p><p class="funnel-rate" id="fn-atc-rate">—% das visitas</p></div>
-      <span class="funnel-arrow">›</span>
-      <div class="funnel-step"><p class="funnel-label">Iniciou checkout</p><p class="funnel-value" id="fn-chk">—</p><p class="funnel-rate" id="fn-chk-rate">—% do carrinho</p></div>
-      <span class="funnel-arrow">›</span>
-      <div class="funnel-step"><p class="funnel-label">Compras</p><p class="funnel-value lime-color" id="fn-buy">—</p><p class="funnel-rate" id="fn-buy-rate">—% do checkout</p></div>
-    </div>
-  </div>
-
-  <!-- ESTADOS -->
-  <div class="chart-card" id="ufCard" style="display:none;">
-    <div class="chart-title">Vendas por Estado</div>
-    <p class="chart-sub">Ingressos lançados com a coluna "estado" preenchida · período selecionado</p>
-    <div class="chart-wrapper" style="height:300px;"><canvas id="ufChart"></canvas></div>
-  </div>
-
   <!-- TABELA -->
   <div class="section-header">
     <p class="section-title">Detalhamento Diário</p>
-    <p class="section-desc">Vendas da planilha + Meta Ads + Google Ads, do dia mais recente ao mais antigo · período selecionado</p>
+    <p class="section-desc">Do dia mais recente ao mais antigo · período selecionado</p>
   </div>
   <div class="chart-card">
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th style="text-align:left;">Data</th>
-            <th id="th-club">2Rodas Club</th><th id="th-lounge">Lounge</th><th>Receita</th>
-            <th>Gasto Meta</th><th>Compras Meta</th><th>Custo/Compra</th><th>Gasto Google</th><th>Conv. Google</th><th>Impressões Meta</th><th>Checkout</th>
-          </tr>
-        </thead>
+        <thead><tr id="tableHead"></tr></thead>
         <tbody id="tableBody"></tbody>
       </table>
     </div>
@@ -480,52 +492,52 @@
 
 <script>
 /* ═══════════════════════════════════════
-   CONFIGURAÇÃO (tudo que muda de temporada fica aqui)
+   CONFIGURAÇÃO
 ═══════════════════════════════════════ */
 const CONFIG = {
-  temporada: 'Temporada 2026/27',
+  temporada: 'MotoGP Brasil 2027',
 
-  /* Planilha de vendas (Google Sheets → Arquivo → Compartilhar → Publicar na web → CSV).
-     Colunas: data | produto | quantidade | valor_unitario | estado | observacao  */
-  vendasCsvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTt0m0xIhw8529T79-mAGZZ9WPGNC2XFvhl7PvrNspCpZmY_AgWaLeN2-RD4pVWUQLApxQg5oAE9nI9/pub?output=csv',
+  /* Vendas pagas do site + Google Ads: resumo sem dados pessoais servido pelo script da planilha
+     "2Rodas Club - Vendas enviadas para a Meta" (Drive da Lime). */
+  vendasApiUrl: 'https://script.google.com/macros/s/AKfycbwl5A4Q5OuYbKEXoUZW46Uh_s0vHp2wH1qjpELasK0MbhgeSll8Y9r3Y_gCfZGj2wqfBg/exec?dash=1',
 
-  /* Meta Ads: gerado pelo robô update-meta-ads.py (GitHub Actions, 3x ao dia) */
+  /* Meta Ads + funil do pixel: gerado pelo robô update-meta-ads.py (GitHub Actions, 3x ao dia) */
   metaJsonUrl: 'meta-data.json',
 
-  /* Google Ads: gerado pelo robô update-google-ads.py (GitHub Actions, 3x ao dia) */
-  googleJsonUrl: 'google-ads-data.json',
+  /* Cores por ingresso (o nome, o preço e a lotação vêm da planilha) */
+  cores: { '2rodas': '#D5FE00', diogo: '#9B3DAB', arquibancada: '#FFFFFF', lounge: '#CC88FF', outro: '#777777' },
 
-  /* Produtos vendidos na Eventim. "preco" é usado quando a coluna valor_unitario vier vazia. */
-  produtos: {
-    club:   { nome: '2Rodas Club',          preco: 7280, meta: 1250, cor: '#D5FE00', corFraca: 'rgba(213,254,0,0.75)' },
-    lounge: { nome: 'Lounge Diogo Moreira', preco: 8900, meta: 250,  cor: '#9B3DAB', corFraca: 'rgba(155,61,171,0.85)' },
-  },
+  /* Ingressos usados enquanto a planilha não responde */
+  ingressosPadrao: [
+    { id: '2rodas',       nome: 'Camarote 2Rodas Club',       preco: 6920,   capacidade: 500 },
+    { id: 'diogo',        nome: 'Camarote Diogo Moreira',     preco: 8900,   capacidade: 100 },
+    { id: 'arquibancada', nome: 'Arquibancada Diogo Moreira', preco: 2250,   capacidade: 500 },
+    { id: 'lounge',       nome: 'Lounge 2Rodas Club',         preco: 195000, capacidade: 5 },
+  ],
 
-  /* Marcos que aparecem como linha vertical no gráfico de vendas. Data sempre com ano. */
+  /* Marcos que aparecem como linha vertical nos gráficos. Data sempre com ano. */
   marcos: [
-    // { data: '10/11/2026', texto: 'Abertura de vendas' },
-    // { data: '20/11/2026', texto: 'Lime inicia Meta Ads' },
+    { data: '25/11/2026', texto: 'Venda no site próprio' },
+    { data: '26/11/2026', texto: 'Nova campanha Meta' },
+    { data: '27/11/2026', texto: 'Google Ads otimizado' },
   ],
 };
 
-/* ?csv=URL na barra de endereço troca a planilha só naquela aba (útil pra testar) */
 const _qs = new URLSearchParams(location.search);
-const VENDAS_CSV_URL = _qs.get('csv') || CONFIG.vendasCsvUrl;
+const VENDAS_API_URL = _qs.get('api') || CONFIG.vendasApiUrl;
 const META_JSON_URL  = _qs.get('meta') || CONFIG.metaJsonUrl;
-const GOOGLE_JSON_URL = _qs.get('google') || CONFIG.googleJsonUrl;
 
 /* ═══════════════════════════════════════
    ESTADO
 ═══════════════════════════════════════ */
-let vendasDiarias = [];   // [{ iso, label, club, lounge, receita, estados:{UF:n}, obs:[...] }] ordenado por iso
-let metaDiario    = [];   // [{ iso, label, gasto, compras, cpp, valorConv, impressoes, alcance, cliques, atc, lpViews, checkout }]
-let googleDiario  = [];   // [{ iso, label, gasto, impressoes, cliques, conversoes, valorConv, ctr, cpc, cpa }]
-let avisos        = [];   // mensagens sobre a leitura da planilha (linhas ignoradas etc.)
-let fonteVendasOk = false;
-let fonteMetaOk   = false;
-let fonteGoogleOk = false;
-let metaUpdated   = '';
-let googleUpdated = '';
+let ingressos     = CONFIG.ingressosPadrao.slice();
+let vendasDiarias = [];   // [{ iso, label, q:{id:qtd}, r:{id:valor}, total, receita }]
+let metaDiario    = [];
+let googleDiario  = [];
+let pixelDiario   = [];   // [{ iso, viewContent, addToCart, initiateCheckout, purchase }]
+let resumoApi     = null;
+let fonteVendasOk = false, fonteMetaOk = false, fonteGoogleOk = false, fontePixelOk = false;
+let metaUpdated = '', vendasUpdated = '';
 
 /* ═══════════════════════════════════════
    HELPERS
@@ -536,487 +548,314 @@ function parseISO(str) { const [y, m, d] = str.split('-').map(Number); return ne
 function labelOf(iso) { return iso.slice(8,10) + '/' + iso.slice(5,7); }
 function labelFull(iso) { return iso.slice(8,10) + '/' + iso.slice(5,7) + '/' + iso.slice(0,4); }
 function fmtShort(date) { return date.toLocaleDateString('pt-BR', { day:'2-digit', month:'short' }).toUpperCase().replace('.',''); }
-const fmtN    = n => n != null ? n.toLocaleString('pt-BR') : '—';
+const fmtN    = n => n != null ? Math.round(n).toLocaleString('pt-BR') : '—';
 const fmtBRL0 = n => 'R$ ' + Math.round(n).toLocaleString('pt-BR');
 const fmtBRL2 = n => 'R$ ' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const fmtConv = n => n != null ? (Math.round(n * 100) / 100).toLocaleString('pt-BR', { maximumFractionDigits: 2 }) : '—';
 const pct     = (a, b, dec = 1) => b ? (a / b * 100).toFixed(dec).replace('.', ',') + '%' : '—';
 function fmtImpr(n) {
   if (n >= 1e6) return (n/1e6).toFixed(2).replace('.',',') + 'M';
-  if (n >= 1e3) return (n/1e3).toFixed(0) + 'K';
-  return n.toLocaleString('pt-BR');
+  if (n >= 1e4) return (n/1e3).toFixed(0) + 'K';
+  return Math.round(n).toLocaleString('pt-BR');
 }
-const norm = s => (s || '').toString().normalize('NFD').replace(/[̀-ͯ]/g, '').trim().toLowerCase();
-
-/* Aceita 05/11/2026, 05/11/26, 2026-11-05 e 05/11 (sem ano: assume ano atual, ou anterior se o mês ainda não chegou) */
 function parseDataBR(str) {
-  const s = (str || '').trim();
-  if (!s) return null;
-  let m;
-  if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)))      return `${m[1]}-${pad2(m[2])}-${pad2(m[3])}`;
-  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/)))    return `${m[3]}-${pad2(m[2])}-${pad2(m[1])}`;
-  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2})$/)))   return `20${m[3]}-${pad2(m[2])}-${pad2(m[1])}`;
-  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})$/))) {
-    const now = new Date(); let y = now.getFullYear();
-    if (Number(m[2]) > now.getMonth() + 1) y -= 1;
-    return `${y}-${pad2(m[2])}-${pad2(m[1])}`;
-  }
+  const s = (str || '').trim(); let m;
+  if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/)))   return `${m[1]}-${pad2(m[2])}-${pad2(m[3])}`;
+  if ((m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/))) return `${m[3]}-${pad2(m[2])}-${pad2(m[1])}`;
   return null;
 }
-
-/* "R$ 7.280,00" → 7280 · "7280" → 7280 · "7.280" → 7280 · "" → null */
-function parseValorBR(str) {
-  let s = (str || '').toString().replace(/R\$|\s/g, '');
-  if (!s) return null;
-  if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
-  else if ((s.match(/\./g) || []).length === 1 && /\.\d{3}$/.test(s)) s = s.replace('.', '');
-  const n = parseFloat(s);
-  return isNaN(n) ? null : n;
+function diasEntre(a, b) {
+  const out = []; const d = parseISO(a), fim = parseISO(b);
+  while (d <= fim && out.length < 800) { out.push(isoOf(d)); d.setDate(d.getDate() + 1); }
+  return out;
 }
+const corDe = id => CONFIG.cores[id] || '#888';
+const alpha = (hex, a) => { const h = hex.replace('#',''); const n = parseInt(h, 16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; };
+function nomeDe(id) { const g = ingressos.find(x => x.id === id); return g ? g.nome : (id === 'outro' ? 'Não identificado' : id); }
+function idsComOutro() { const ids = ingressos.map(g => g.id); if (vendasDiarias.some(d => d.q.outro)) ids.push('outro'); return ids; }
 
-/* CSV com aspas (o Google Sheets põe aspas quando a célula tem vírgula) */
-function parseCSV(text) {
-  const rows = []; let row = [], field = '', q = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) {
-      if (c === '"') { if (text[i+1] === '"') { field += '"'; i++; } else q = false; }
-      else field += c;
-    } else {
-      if (c === '"') q = true;
-      else if (c === ',') { row.push(field); field = ''; }
-      else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
-      else if (c === '\r') { /* ignora */ }
-      else field += c;
-    }
-  }
-  if (field !== '' || row.length) { row.push(field); rows.push(row); }
-  return rows.filter(r => r.some(c => c.trim() !== ''));
-}
-
-function produtoDe(str) {
-  const s = norm(str);
-  if (!s) return null;
-  if (s.includes('lounge') || s.includes('diogo')) return 'lounge';
-  if (s.includes('club') || s.includes('rodas') || s.includes('camarote')) return 'club';
-  return null;
-}
-
-/* Linhas da planilha → vendas agregadas por dia */
-function montarVendas(rows) {
-  avisos = [];
-  if (!rows.length) return [];
-  const header = rows[0].map(norm);
-  const col = (...nomes) => { for (const n of nomes) { const i = header.indexOf(n); if (i >= 0) return i; } return -1; };
-  const cData = col('data', 'data_venda', 'dia'), cProd = col('produto', 'ingresso', 'tipo'),
-        cQtd = col('quantidade', 'qtd', 'quantidade_vendida'), cVal = col('valor_unitario', 'valor', 'preco'),
-        cUF = col('estado', 'uf'), cObs = col('observacao', 'obs', 'notas', 'nota');
-  if (cData < 0) { avisos.push('A planilha não tem a coluna "data".'); return []; }
-
+/* ═══════════════════════════════════════
+   MONTAGEM DOS DADOS
+═══════════════════════════════════════ */
+function montarVendas(api) {
   const porDia = {};
-  let ignSemData = 0, ignProduto = 0;
-  rows.slice(1).forEach(r => {
-    const iso = parseDataBR(r[cData]);
-    if (!iso) { ignSemData++; return; }
-    const prod = cProd >= 0 ? produtoDe(r[cProd]) : 'club';
-    if (!prod) { ignProduto++; return; }
-    const qtdRaw = cQtd >= 0 ? (r[cQtd] || '').trim() : '';
-    const qtd = qtdRaw === '' ? 1 : (parseInt(qtdRaw, 10) || 0);
-    const valor = cVal >= 0 ? parseValorBR(r[cVal]) : null;
-    const preco = valor != null ? valor : CONFIG.produtos[prod].preco;
-    const uf = cUF >= 0 ? (r[cUF] || '').trim().toUpperCase() : '';
-    const obs = cObs >= 0 ? (r[cObs] || '').trim() : '';
-    const d = porDia[iso] || (porDia[iso] = { iso, label: labelOf(iso), club: 0, lounge: 0, receita: 0, estados: {}, obs: [] });
-    d[prod] += qtd;
-    d.receita += qtd * preco;
-    if (uf) d.estados[uf] = (d.estados[uf] || 0) + qtd;
-    if (obs) d.obs.push(obs);
+  (api.vendas || []).forEach(v => {
+    const iso = parseDataBR(v.data); if (!iso) return;
+    const d = porDia[iso] || (porDia[iso] = { iso, label: labelOf(iso), q: {}, r: {}, total: 0, receita: 0 });
+    d.q[v.ingresso] = (d.q[v.ingresso] || 0) + (Number(v.qtd) || 0);
+    d.r[v.ingresso] = (d.r[v.ingresso] || 0) + (Number(v.receita) || 0);
+    d.total += Number(v.qtd) || 0;
+    d.receita += Number(v.receita) || 0;
   });
-  if (ignSemData) avisos.push(`${ignSemData} linha(s) ignorada(s) por data em branco ou inválida.`);
-  if (ignProduto) avisos.push(`${ignProduto} linha(s) ignorada(s) por produto não reconhecido (use "2Rodas Club" ou "Lounge").`);
   return Object.values(porDia).sort((a, b) => a.iso < b.iso ? -1 : 1);
 }
 
-/* JSON do robô → lista com iso. Arquivos antigos (sem dataISO) ganham ano por aproximação. */
 function montarMeta(json) {
   const now = new Date();
   return (json.data || []).map(d => {
     let iso = d.dataISO;
-    if (!iso && d.data) {
-      const [dd, mm] = d.data.split('/').map(Number);
-      let y = now.getFullYear(); if (mm > now.getMonth() + 1) y -= 1;
-      iso = `${y}-${pad2(mm)}-${pad2(dd)}`;
-    }
+    if (!iso && d.data) { const [dd, mm] = d.data.split('/').map(Number); let y = now.getFullYear(); if (mm > now.getMonth() + 1) y -= 1; iso = `${y}-${pad2(mm)}-${pad2(dd)}`; }
     return { ...d, iso, label: labelOf(iso) };
   }).filter(d => d.iso).sort((a, b) => a.iso < b.iso ? -1 : 1);
 }
 
+function montarSimples(lista) {
+  return (lista || []).map(d => ({ ...d, iso: d.dataISO, label: labelOf(d.dataISO) })).filter(d => d.iso).sort((a, b) => a.iso < b.iso ? -1 : 1);
+}
+
 /* ═══════════════════════════════════════
-   CHART DEFAULTS
+   GRÁFICOS
 ═══════════════════════════════════════ */
 Chart.defaults.color = '#888';
 Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.font.size = 11;
 const gridLine = { color: 'rgba(255,255,255,0.06)', drawBorder: false };
-const tooltipBase = {
-  backgroundColor: '#1C1C1C', borderColor: 'rgba(213,254,0,0.25)', borderWidth: 1,
-  titleColor: '#D5FE00', bodyColor: '#D8D8D8', padding: 12, cornerRadius: 8,
-};
-const P = CONFIG.produtos;
-
-let tlChart, cumChart, spendChartInst, cppChartInst, ufChartInst;
-let currentVF = [], currentMF = [];
+const tooltipBase = { backgroundColor: '#1C1C1C', borderColor: 'rgba(213,254,0,0.25)', borderWidth: 1, titleColor: '#D5FE00', bodyColor: '#D8D8D8', padding: 12, cornerRadius: 8 };
+let tlChart, cumChart, spendChartInst, fdChart;
+let currentVF = [];
 
 function setEmpty(id, empty) { document.getElementById(id).classList.toggle('is-empty', empty); }
 
-function initCharts() {
-  /* 1. TIMELINE: barras empilhadas por produto */
-  tlChart = new Chart(document.getElementById('timelineChart').getContext('2d'), {
-    type: 'bar',
-    data: { labels: [], datasets: [
-      { label: P.club.nome,   data: [], backgroundColor: P.club.corFraca,   borderColor: P.club.cor,   borderWidth: 1, borderRadius: 3, stack: 'v' },
-      { label: P.lounge.nome, data: [], backgroundColor: P.lounge.corFraca, borderColor: P.lounge.cor, borderWidth: 1, borderRadius: 3, stack: 'v' },
-    ]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: false },
-        tooltip: { ...tooltipBase, callbacks: {
-          title: items => { const d = currentVF[items[0].dataIndex]; return d ? labelFull(d.iso) : ''; },
-          label: item => ` ${item.dataset.label}: ${fmtN(item.raw)}`,
-          afterBody: items => {
-            const d = currentVF[items[0].dataIndex]; if (!d) return '';
-            const out = [` Receita: ${fmtBRL0(d.receita)}`];
-            const m = currentMF.find(x => x.iso === d.iso);
-            if (m) out.push(` Gasto Meta: ${fmtBRL2(m.gasto)} · Compras Meta: ${m.compras}`);
-            if (d.obs.length) out.push(` Obs: ${d.obs.join(' · ')}`);
-            return out;
-          }
-        }},
-        annotation: { annotations: {} }
-      },
-      scales: {
-        x: { stacked: true, grid: gridLine, ticks: { color: '#888', font: { size: 10 }, maxRotation: 45 } },
-        y: { stacked: true, grid: gridLine, beginAtZero: true, ticks: { color: '#888', precision: 0 }, title: { display: true, text: 'Ingressos vendidos', color: '#777', font: { size: 10 } } }
-      }
-    }
-  });
-
-  /* 2. ACUMULADO x META */
-  cumChart = new Chart(document.getElementById('cumChart').getContext('2d'), {
-    type: 'line',
-    data: { labels: [], datasets: [
-      { label: P.club.nome,   data: [], borderColor: P.club.cor,   backgroundColor: 'rgba(213,254,0,0.06)', borderWidth: 2.5, pointRadius: 2, tension: 0.25, fill: true },
-      { label: P.lounge.nome, data: [], borderColor: P.lounge.cor, backgroundColor: 'rgba(155,61,171,0.08)', borderWidth: 2.5, pointRadius: 2, tension: 0.25, fill: true },
-    ]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: true, labels: { color: '#AAA', font: { size: 10 }, boxWidth: 10, padding: 14 } },
-        tooltip: { ...tooltipBase, callbacks: { label: item => ` ${item.dataset.label}: ${fmtN(item.raw)} acumulados` } },
-        annotation: { annotations: {
-          metaClub:   { type: 'line', yMin: P.club.meta,   yMax: P.club.meta,   borderColor: 'rgba(213,254,0,0.45)',  borderWidth: 1.5, borderDash: [6,4], label: { display: true, content: `Meta ${P.club.nome}: ${fmtN(P.club.meta)}`,   position: 'end', backgroundColor: 'rgba(213,254,0,0.12)',  color: '#D5FE00', font: { family: "'Barlow Condensed',sans-serif", size: 10, weight: '700' }, padding: { x: 6, y: 3 }, borderRadius: 4 } },
-          metaLounge: { type: 'line', yMin: P.lounge.meta, yMax: P.lounge.meta, borderColor: 'rgba(204,136,255,0.5)', borderWidth: 1.5, borderDash: [6,4], label: { display: true, content: `Meta ${P.lounge.nome}: ${fmtN(P.lounge.meta)}`, position: 'end', backgroundColor: 'rgba(123,45,139,0.18)', color: '#CC88FF', font: { family: "'Barlow Condensed',sans-serif", size: 10, weight: '700' }, padding: { x: 6, y: 3 }, borderRadius: 4 } },
-        }}
-      },
-      scales: {
-        x: { grid: gridLine, ticks: { color: '#888', font: { size: 10 }, maxRotation: 45 } },
-        y: { grid: gridLine, beginAtZero: true, ticks: { color: '#888', precision: 0 }, title: { display: true, text: 'Ingressos acumulados', color: '#777', font: { size: 10 } } }
-      }
-    }
-  });
-
-  /* 3. GASTO vs COMPRAS */
-  spendChartInst = new Chart(document.getElementById('spendChart').getContext('2d'), {
-    type: 'bar',
-    data: { labels: [], datasets: [
-      { type: 'bar',  label: 'Gasto Meta (R$)',   data: [], backgroundColor: 'rgba(213,254,0,0.22)',   borderColor: 'rgba(213,254,0,0.6)',   borderWidth: 1, borderRadius: 3, yAxisID: 'y', stack: 'g' },
-      { type: 'bar',  label: 'Gasto Google (R$)', data: [], backgroundColor: 'rgba(255,255,255,0.14)', borderColor: 'rgba(255,255,255,0.4)', borderWidth: 1, borderRadius: 3, yAxisID: 'y', stack: 'g' },
-      { type: 'line', label: 'Compras Meta',      data: [], borderColor: '#9B3DAB', backgroundColor: 'rgba(123,45,139,0.1)', borderWidth: 2.5, pointBackgroundColor: '#9B3DAB', pointRadius: 3, tension: 0.3, yAxisID: 'y2' }
-    ]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: true, labels: { color: '#AAA', font: { size: 10 }, boxWidth: 10, padding: 14 } },
-        tooltip: { ...tooltipBase, callbacks: { label: item => item.dataset.yAxisID === 'y' ? ` ${item.dataset.label}: ${fmtBRL2(item.raw)}` : ` ${item.dataset.label}: ${item.raw}` } }
-      },
-      scales: {
-        x:  { stacked: true, grid: gridLine, ticks: { color: '#888', font: { size: 10 } } },
-        y:  { stacked: true, grid: gridLine, beginAtZero: true, ticks: { color: '#888', callback: v => 'R$' + (v >= 1000 ? (v/1000).toFixed(1).replace('.',',') + 'K' : v) }, title: { display: true, text: 'Gasto (R$)', color: '#777', font: { size: 9 } } },
-        y2: { grid: { display: false }, position: 'right', beginAtZero: true, ticks: { color: '#888', precision: 0 }, title: { display: true, text: 'Compras', color: '#777', font: { size: 9 } } }
-      }
-    }
-  });
-
-  /* 4. CUSTO POR COMPRA */
-  cppChartInst = new Chart(document.getElementById('cppChart').getContext('2d'), {
-    type: 'line',
-    data: { labels: [], datasets: [{
-      label: 'Custo por compra (R$)', data: [],
-      borderColor: '#D5FE00', backgroundColor: 'rgba(213,254,0,0.07)', borderWidth: 2.5,
-      pointBackgroundColor: '#D5FE00', pointBorderColor: 'transparent', pointRadius: 4, pointHoverRadius: 6, tension: 0.35, fill: true,
-    }]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { ...tooltipBase, callbacks: { label: item => ` Custo por compra: ${fmtBRL2(item.raw)}` } },
-        annotation: { annotations: {} }
-      },
-      scales: {
-        x: { grid: gridLine, ticks: { color: '#888', font: { size: 10 } } },
-        y: { grid: gridLine, beginAtZero: true, ticks: { color: '#888', callback: v => 'R$' + v.toFixed(0) }, title: { display: true, text: 'R$ por compra', color: '#777', font: { size: 10 } } }
-      }
-    }
-  });
-
-  /* 5. ESTADOS */
-  ufChartInst = new Chart(document.getElementById('ufChart').getContext('2d'), {
-    type: 'bar',
-    data: { labels: [], datasets: [{ label: 'Ingressos', data: [], backgroundColor: 'rgba(213,254,0,0.35)', borderColor: '#D5FE00', borderWidth: 1, borderRadius: 4 }] },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { ...tooltipBase, callbacks: { label: item => ` ${fmtN(item.raw)} ingresso(s)` } } },
-      scales: {
-        x: { grid: gridLine, beginAtZero: true, ticks: { color: '#888', precision: 0 } },
-        y: { grid: { display: false }, ticks: { color: '#CCC', font: { size: 11, weight: '600' } } }
-      }
-    }
-  });
-}
-
-function buildMarcos(vf) {
+function buildMarcos(labels) {
   const ann = {};
   CONFIG.marcos.forEach((m, i) => {
     const iso = parseDataBR(m.data); if (!iso) return;
-    const idx = vf.findIndex(d => d.iso === iso); if (idx < 0) return;
+    const idx = labels.indexOf(labelOf(iso)); if (idx < 0) return;
     ann['marco' + i] = {
-      type: 'line', xMin: idx, xMax: idx,
-      borderColor: 'rgba(213,254,0,0.65)', borderWidth: 2, borderDash: [6,4],
-      label: { display: true, content: '✱ ' + m.texto.toUpperCase(), position: 'start', backgroundColor: 'rgba(213,254,0,0.12)', borderColor: 'rgba(213,254,0,0.35)', borderWidth: 1, borderRadius: 5, color: '#D5FE00', font: { family: "'Barlow Condensed',sans-serif", size: 11, weight: '700' }, padding: { x: 8, y: 5 }, yAdjust: 10 + (i % 3) * 28 }
+      type: 'line', xMin: idx, xMax: idx, borderColor: 'rgba(213,254,0,0.55)', borderWidth: 1.5, borderDash: [6,4],
+      label: { display: true, content: '✱ ' + m.texto.toUpperCase(), position: 'start', backgroundColor: 'rgba(213,254,0,0.12)', borderColor: 'rgba(213,254,0,0.35)', borderWidth: 1, borderRadius: 5, color: '#D5FE00', font: { family: "'Barlow Condensed',sans-serif", size: 10, weight: '700' }, padding: { x: 6, y: 4 }, yAdjust: 6 + (i % 3) * 24 }
     };
   });
   return ann;
 }
 
-function buildAvgLine(avg) {
-  return {
-    type: 'line', yMin: avg, yMax: avg,
-    borderColor: 'rgba(255,68,68,0.5)', borderWidth: 1.5, borderDash: [5,4],
-    label: { display: true, content: `Média ${fmtBRL2(avg)}`, position: 'end', backgroundColor: 'rgba(255,68,68,0.12)', borderColor: 'rgba(255,68,68,0.3)', borderWidth: 1, borderRadius: 4, color: '#FF8888', font: { family: "'Barlow Condensed',sans-serif", size: 10, weight: '700' }, padding: { x: 6, y: 4 } }
-  };
+function initCharts() {
+  tlChart = new Chart(document.getElementById('timelineChart').getContext('2d'), {
+    type: 'bar', data: { labels: [], datasets: [] },
+    options: {
+      responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false },
+        tooltip: { ...tooltipBase, filter: it => it.raw > 0, callbacks: {
+          title: items => { const d = currentVF[items[0].dataIndex]; return d ? labelFull(d.iso) : ''; },
+          label: item => ` ${item.dataset.label}: ${fmtN(item.raw)}`,
+          afterBody: items => { const d = currentVF[items[0].dataIndex]; return d ? [` Valor vendido: ${fmtBRL0(d.receita)}`] : ''; } } },
+        annotation: { annotations: {} } },
+      scales: { x: { stacked: true, grid: gridLine, ticks: { font: { size: 10 }, maxRotation: 45 } },
+                y: { stacked: true, grid: gridLine, beginAtZero: true, ticks: { precision: 0 }, title: { display: true, text: 'Ingressos', color: '#777', font: { size: 10 } } } }
+    }
+  });
+
+  cumChart = new Chart(document.getElementById('cumChart').getContext('2d'), {
+    type: 'line',
+    data: { labels: [], datasets: [{ label: 'Valor acumulado', data: [], borderColor: '#D5FE00', backgroundColor: 'rgba(213,254,0,0.08)', borderWidth: 2.5, pointRadius: 2, tension: 0.25, fill: true }] },
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: { ...tooltipBase, callbacks: { label: it => ` ${fmtBRL0(it.raw)}` } } },
+      scales: { x: { grid: gridLine, ticks: { font: { size: 10 }, maxRotation: 45 } },
+                y: { grid: gridLine, beginAtZero: true, ticks: { callback: v => 'R$' + (v >= 1000 ? (v/1000).toFixed(0) + 'K' : v) } } } }
+  });
+
+  spendChartInst = new Chart(document.getElementById('spendChart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: [], datasets: [
+      { type: 'bar',  label: 'Gasto Meta (R$)',   data: [], backgroundColor: 'rgba(213,254,0,0.22)',   borderColor: 'rgba(213,254,0,0.6)',   borderWidth: 1, borderRadius: 3, yAxisID: 'y', stack: 'g' },
+      { type: 'bar',  label: 'Gasto Google (R$)', data: [], backgroundColor: 'rgba(255,255,255,0.14)', borderColor: 'rgba(255,255,255,0.4)', borderWidth: 1, borderRadius: 3, yAxisID: 'y', stack: 'g' },
+      { type: 'line', label: 'Ingressos vendidos', data: [], borderColor: '#9B3DAB', backgroundColor: 'rgba(123,45,139,0.1)', borderWidth: 2.5, pointBackgroundColor: '#9B3DAB', pointRadius: 3, tension: 0.3, yAxisID: 'y2' }
+    ]},
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: true, labels: { color: '#AAA', font: { size: 10 }, boxWidth: 10, padding: 12 } },
+        tooltip: { ...tooltipBase, callbacks: { label: it => it.dataset.yAxisID === 'y' ? ` ${it.dataset.label}: ${fmtBRL2(it.raw)}` : ` ${it.dataset.label}: ${it.raw}` } } },
+      scales: { x: { stacked: true, grid: gridLine, ticks: { font: { size: 10 } } },
+        y:  { stacked: true, grid: gridLine, beginAtZero: true, ticks: { callback: v => 'R$' + (v >= 1000 ? (v/1000).toFixed(1).replace('.',',') + 'K' : v) } },
+        y2: { grid: { display: false }, position: 'right', beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  fdChart = new Chart(document.getElementById('funilDiaChart').getContext('2d'), {
+    type: 'line',
+    data: { labels: [], datasets: [
+      { label: 'Página de compra', data: [], borderColor: 'rgba(255,255,255,0.55)', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 2, tension: 0.3 },
+      { label: 'Carrinho',         data: [], borderColor: '#CC88FF', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 2, tension: 0.3 },
+      { label: 'Checkout',         data: [], borderColor: '#9B3DAB', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 2, tension: 0.3 },
+      { label: 'Compras pagas',    data: [], borderColor: '#D5FE00', backgroundColor: 'rgba(213,254,0,0.08)', borderWidth: 2.5, pointRadius: 3, tension: 0.3, fill: true },
+    ]},
+    options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: true, labels: { color: '#AAA', font: { size: 10 }, boxWidth: 10, padding: 12 } }, tooltip: { ...tooltipBase } },
+      scales: { x: { grid: gridLine, ticks: { font: { size: 10 } } }, y: { grid: gridLine, beginAtZero: true, ticks: { precision: 0 } } } }
+  });
 }
 
 /* ═══════════════════════════════════════
    RENDER
 ═══════════════════════════════════════ */
+const soma = (arr, f) => arr.reduce((s, d) => s + (typeof f === 'function' ? f(d) : (d[f] || 0)), 0);
+
 function renderKPIs(vf, mf, gf) {
-  const club   = vf.reduce((s, d) => s + d.club, 0);
-  const lounge = vf.reduce((s, d) => s + d.lounge, 0);
-  const receita = vf.reduce((s, d) => s + d.receita, 0);
-  const investMeta   = mf.reduce((s, d) => s + d.gasto, 0);
-  const investGoogle = gf.reduce((s, d) => s + d.gasto, 0);
-  const invest  = investMeta + investGoogle;
-  const compras = mf.reduce((s, d) => s + d.compras, 0);
-  const valorConv = mf.reduce((s, d) => s + (d.valorConv || 0), 0);
-
-  document.getElementById('cnt-ingressos').textContent = fmtN(club + lounge);
-  document.getElementById('kpi-ingressos-sub').textContent = `${fmtN(club)} ${P.club.nome} · ${fmtN(lounge)} ${P.lounge.nome}`;
+  const total = soma(vf, 'total'), receita = soma(vf, 'receita');
+  const iMeta = soma(mf, 'gasto'), iGoogle = soma(gf, 'gasto'), invest = iMeta + iGoogle;
+  document.getElementById('cnt-ingressos').textContent = fmtN(total);
+  const partes = idsComOutro().map(id => ({ id, n: soma(vf, d => d.q[id] || 0) })).filter(x => x.n > 0);
+  document.getElementById('kpi-ingressos-sub').textContent = partes.length ? partes.map(x => `${fmtN(x.n)} ${nomeDe(x.id)}`).join(' · ') : 'Pedidos pagos no site';
   document.getElementById('cnt-receita').textContent = fmtBRL0(receita);
-  document.getElementById('kpi-receita-sub').textContent = (club + lounge) ? `Ticket médio ${fmtBRL0(receita / (club + lounge))}` : 'Quantidade × valor unitário';
+  document.getElementById('kpi-receita-sub').textContent = total ? `Ticket médio ${fmtBRL0(receita / total)} · sem a taxa do comprador` : 'Sem a taxa de serviço do comprador';
   document.getElementById('cnt-invest').textContent = fmtBRL2(invest);
-  document.getElementById('kpi-invest-split').textContent = `Meta ${fmtBRL2(investMeta)} · Google ${fmtBRL2(investGoogle)}`;
-  document.getElementById('kpi-invest-sub').textContent = (club + lounge) && invest ? `${fmtBRL2(invest / (club + lounge))} de mídia por ingresso vendido` : '';
-  document.getElementById('cnt-compras').textContent = fmtN(compras);
-  document.getElementById('kpi-valor-conv').textContent = valorConv > 0 ? fmtBRL2(valorConv) + ' em valor de conversão' : '';
-  document.getElementById('kpi-cpp-sub').textContent = compras > 0 ? `Custo por compra (Meta): ${fmtBRL2(investMeta / compras)}` : 'Sem compras rastreadas no período';
+  document.getElementById('kpi-invest-split').textContent = `Meta ${fmtBRL2(iMeta)} · Google ${fmtBRL2(iGoogle)}` + (total && invest ? ` · ${fmtBRL0(invest / total)} por ingresso` : '');
+  document.getElementById('cnt-roas').textContent = invest && receita ? (receita / invest).toFixed(1).replace('.', ',') + '×' : '—';
+  document.getElementById('kpi-roas-sub').textContent = invest && receita ? `Cada R$ 1 em mídia virou ${fmtBRL2(receita / invest)} em vendas` : 'Valor vendido ÷ investimento (aparece com a 1ª venda)';
 }
 
-function renderGoals() {
-  const club   = vendasDiarias.reduce((s, d) => s + d.club, 0);
-  const lounge = vendasDiarias.reduce((s, d) => s + d.lounge, 0);
-  const set = (k, sold, p) => {
-    const pc = p.meta ? Math.min(100, sold / p.meta * 100) : 0;
-    document.getElementById(`goal-${k}-name`).textContent = p.nome;
-    document.getElementById(`goal-${k}-pct`).textContent = p.meta ? pc.toFixed(1).replace('.', ',') + '%' : '—';
-    document.getElementById(`goal-${k}-fill`).style.width = pc + '%';
-    document.getElementById(`goal-${k}-sold`).textContent = `${fmtN(sold)} vendidos`;
-    document.getElementById(`goal-${k}-left`).textContent = p.meta ? `meta ${fmtN(p.meta)} · faltam ${fmtN(Math.max(0, p.meta - sold))}` : 'sem meta definida';
-  };
-  set('club', club, P.club);
-  set('lounge', lounge, P.lounge);
+function renderIngressos(vf) {
+  const html = ingressos.map(g => {
+    const qPer = soma(vf, d => d.q[g.id] || 0), rPer = soma(vf, d => d.r[g.id] || 0);
+    const qTot = soma(vendasDiarias, d => d.q[g.id] || 0);
+    const oc = g.capacidade ? Math.min(100, qTot / g.capacidade * 100) : 0;
+    return `<div class="tk-card" style="--tk:${corDe(g.id)}">
+      <p class="tk-name">${g.nome}</p>
+      <p class="tk-price">${fmtBRL0(g.preco)} por ingresso</p>
+      <div class="tk-row"><p class="tk-qtd">${fmtN(qPer)}<small>vendidos</small></p><p class="tk-rec">${fmtBRL0(rPer)}</p></div>
+      <div class="tk-bar"><div class="tk-fill" style="width:${oc}%"></div></div>
+      <div class="tk-sub"><span>${fmtN(qTot)} de ${fmtN(g.capacidade)} na temporada</span><span>${g.capacidade ? oc.toFixed(1).replace('.', ',') + '%' : ''}</span></div>
+    </div>`;
+  }).join('');
+  document.getElementById('tkGrid').innerHTML = html;
 }
 
-function renderCharts(vf, mf, gf) {
-  currentVF = vf; currentMF = mf;
+function renderFunilSite(vf, pf) {
+  const vc = soma(pf, 'viewContent'), atc = soma(pf, 'addToCart'), chk = soma(pf, 'initiateCheckout');
+  const pedidosPagos = soma(vf, d => d.total);
+  const set = (id, v) => document.getElementById(id).textContent = v;
+  set('sf-vc', fontePixelOk ? fmtN(vc) : '—');
+  set('sf-atc', fontePixelOk ? fmtN(atc) : '—');
+  set('sf-chk', fontePixelOk ? fmtN(chk) : '—');
+  set('sf-buy', fmtN(pedidosPagos));
+  set('sf-atc-r', fontePixelOk ? pct(atc, vc) + ' da página' : '—');
+  set('sf-chk-r', fontePixelOk ? pct(chk, atc) + ' do carrinho' : '—');
+  set('sf-buy-r', fontePixelOk && chk ? pct(pedidosPagos, chk) + ' do checkout' : (vc ? pct(pedidosPagos, vc) + ' da página' : '—'));
+  const base = Math.max(vc, 1);
+  [['sf1', vc], ['sf2', atc], ['sf3', chk], ['sf4', pedidosPagos]].forEach(([id, v]) => document.getElementById(id).style.setProperty('--w', Math.max(2, Math.min(100, v / base * 100)) + '%'));
+  document.getElementById('sf-note').textContent = fontePixelOk
+    ? 'Etapas 1 a 3 pelo pixel da Meta no site (desde 26/11/2026); compras pelos pedidos pagos do Wix. Compras contam ingressos, não pedidos.'
+    : 'O pixel ainda não liberou os números das etapas 1 a 3 para o robô. As compras já vêm dos pedidos pagos do Wix.';
+}
 
-  tlChart.data.labels = vf.map(d => d.label);
-  tlChart.data.datasets[0].data = vf.map(d => d.club);
-  tlChart.data.datasets[1].data = vf.map(d => d.lounge);
-  tlChart.options.plugins.annotation.annotations = buildMarcos(vf);
+function renderCharts(vf, mf, gf, pf, fromIso, toIso) {
+  const ids = idsComOutro();
+  const vMap0 = {}; vf.forEach(d => vMap0[d.iso] = d);
+  const todos = diasEntre(fromIso, toIso);
+  currentVF = todos.map(iso => vMap0[iso] || { iso, label: labelOf(iso), q: {}, r: {}, total: 0, receita: 0 });
+  tlChart.data.labels = todos.map(labelOf);
+  tlChart.data.datasets = ids.map(id => ({ label: nomeDe(id), data: currentVF.map(d => d.q[id] || 0), backgroundColor: alpha(corDe(id), 0.75), borderColor: corDe(id), borderWidth: 1, borderRadius: 3, stack: 'v', maxBarThickness: 42 }));
+  tlChart.options.plugins.annotation.annotations = buildMarcos(tlChart.data.labels);
   tlChart.update();
   setEmpty('tlWrap', vf.length === 0);
+  document.getElementById('tlLegend').innerHTML = ids.map(id => `<div class="phase-item"><div class="phase-dot" style="background:${corDe(id)}"></div><span>${nomeDe(id)}</span></div>`).join('');
 
-  /* acumulado: soma desde o início, recortado no período */
-  let cc = 0, cl = 0;
-  const cum = vendasDiarias.map(d => { cc += d.club; cl += d.lounge; return { iso: d.iso, label: d.label, club: cc, lounge: cl }; });
-  const cumF = vf.length ? cum.filter(d => d.iso >= vf[0].iso && d.iso <= vf[vf.length - 1].iso) : [];
-  cumChart.data.labels = cumF.map(d => d.label);
-  cumChart.data.datasets[0].data = cumF.map(d => d.club);
-  cumChart.data.datasets[1].data = cumF.map(d => d.lounge);
+  const recPorDia = {}; vendasDiarias.forEach(d => recPorDia[d.iso] = d.receita);
+  let acc = vendasDiarias.filter(d => d.iso < fromIso).reduce((s, d) => s + d.receita, 0);
+  const cum = vf.length || acc ? todos.map(iso => { acc += recPorDia[iso] || 0; return { iso, label: labelOf(iso), v: acc }; }) : [];
+  cumChart.data.labels = cum.map(d => d.label);
+  cumChart.data.datasets[0].data = cum.map(d => Math.round(d.v));
   cumChart.update();
-  setEmpty('cumWrap', cumF.length === 0);
+  setEmpty('cumWrap', cum.length === 0);
 
   const mMap = {}; mf.forEach(d => mMap[d.iso] = d);
   const gMap = {}; gf.forEach(d => gMap[d.iso] = d);
-  const diasMidia = [...new Set([...mf.map(d => d.iso), ...gf.map(d => d.iso)])].sort();
-  spendChartInst.data.labels = diasMidia.map(labelOf);
-  spendChartInst.data.datasets[0].data = diasMidia.map(i => mMap[i] ? mMap[i].gasto : 0);
-  spendChartInst.data.datasets[1].data = diasMidia.map(i => gMap[i] ? gMap[i].gasto : 0);
-  spendChartInst.data.datasets[2].data = diasMidia.map(i => mMap[i] ? mMap[i].compras : null);
+  const vMap = {}; vf.forEach(d => vMap[d.iso] = d);
+  const dias = [...new Set([...mf.map(d => d.iso), ...gf.map(d => d.iso), ...vf.map(d => d.iso)])].sort();
+  spendChartInst.data.labels = dias.map(labelOf);
+  spendChartInst.data.datasets[0].data = dias.map(i => mMap[i] ? mMap[i].gasto : 0);
+  spendChartInst.data.datasets[1].data = dias.map(i => gMap[i] ? gMap[i].gasto : 0);
+  spendChartInst.data.datasets[2].data = dias.map(i => vMap[i] ? vMap[i].total : 0);
   spendChartInst.update();
-  setEmpty('spendWrap', diasMidia.length === 0);
+  setEmpty('spendWrap', dias.length === 0);
 
-  const cppF = mf.filter(d => d.cpp != null && d.compras > 0);
-  const gasto = cppF.reduce((s, d) => s + d.gasto, 0), comp = cppF.reduce((s, d) => s + d.compras, 0);
-  cppChartInst.data.labels = cppF.map(d => d.label);
-  cppChartInst.data.datasets[0].data = cppF.map(d => d.cpp);
-  cppChartInst.options.plugins.annotation.annotations = comp ? { avgLine: buildAvgLine(gasto / comp) } : {};
-  cppChartInst.update();
-  setEmpty('cppWrap', cppF.length === 0);
-
-  /* estados */
-  const ufs = {};
-  vf.forEach(d => Object.entries(d.estados).forEach(([uf, n]) => ufs[uf] = (ufs[uf] || 0) + n));
-  const ufList = Object.entries(ufs).sort((a, b) => b[1] - a[1]).slice(0, 15);
-  document.getElementById('ufCard').style.display = ufList.length ? '' : 'none';
-  ufChartInst.data.labels = ufList.map(u => u[0]);
-  ufChartInst.data.datasets[0].data = ufList.map(u => u[1]);
-  ufChartInst.update();
+  const pMap = {}; pf.forEach(d => pMap[d.iso] = d);
+  const diasF = [...new Set([...pf.map(d => d.iso), ...vf.map(d => d.iso)])].sort();
+  fdChart.data.labels = diasF.map(labelOf);
+  fdChart.data.datasets[0].data = diasF.map(i => pMap[i] ? pMap[i].viewContent : 0);
+  fdChart.data.datasets[1].data = diasF.map(i => pMap[i] ? pMap[i].addToCart : 0);
+  fdChart.data.datasets[2].data = diasF.map(i => pMap[i] ? pMap[i].initiateCheckout : 0);
+  fdChart.data.datasets[3].data = diasF.map(i => vMap[i] ? vMap[i].total : 0);
+  fdChart.update();
+  setEmpty('fdWrap', diasF.length === 0);
 }
 
-function renderTable(vf, mf, gf) {
-  const tbody = document.getElementById('tableBody');
-  const vMap = {}; vf.forEach(d => vMap[d.iso] = d);
-  const mMap = {}; mf.forEach(d => mMap[d.iso] = d);
-  const gMap = {}; gf.forEach(d => gMap[d.iso] = d);
-  const dias = [...new Set([...vf.map(d => d.iso), ...mf.map(d => d.iso), ...gf.map(d => d.iso)])].sort().reverse();
-  document.getElementById('th-club').textContent = P.club.nome;
-  document.getElementById('th-lounge').textContent = P.lounge.nome;
-  if (!dias.length) { tbody.innerHTML = '<tr><td colspan="11" class="muted" style="text-align:center;">Nenhum dado no período selecionado.</td></tr>'; return; }
-  tbody.innerHTML = dias.map(iso => {
-    const v = vMap[iso], m = mMap[iso], g = gMap[iso];
-    const temVenda = v && (v.club + v.lounge) > 0;
-    const obs = v && v.obs.length ? `<span class="tag tag-note" title="${v.obs.join(' · ').replace(/"/g, '&quot;')}">${v.obs.join(' · ')}</span>` : '';
-    return `<tr class="${temVenda ? 'sale-row' : ''}">
-      <td>${labelFull(iso)}${obs}</td>
-      <td class="${v && v.club ? '' : 'muted'}">${v ? fmtN(v.club) : '—'}</td>
-      <td class="${v && v.lounge ? '' : 'muted'}">${v ? fmtN(v.lounge) : '—'}</td>
-      <td>${v ? fmtBRL0(v.receita) : '—'}</td>
-      <td>${m ? fmtBRL2(m.gasto) : '—'}</td>
-      <td>${m ? fmtN(m.compras) : '—'}</td>
-      <td>${m && m.cpp != null && m.compras > 0 ? fmtBRL2(m.cpp) : '—'}</td>
-      <td>${g ? fmtBRL2(g.gasto) : '—'}</td>
-      <td>${g ? fmtConv(g.conversoes) : '—'}</td>
-      <td>${m ? fmtN(m.impressoes) : '—'}</td>
-      <td>${m ? fmtN(m.checkout) : '—'}</td>
-    </tr>`;
-  }).join('');
+function renderFunnelMeta(mf) {
+  const imp = soma(mf, 'impressoes'), clk = soma(mf, 'cliques'), lp = soma(mf, 'lpViews'), atc = soma(mf, 'atc'), chk = soma(mf, 'checkout'), buy = soma(mf, 'compras');
+  const set = (id, v) => document.getElementById(id).textContent = v;
+  set('fn-imp', fmtImpr(imp)); set('fn-clk', fmtN(clk)); set('fn-lp', fmtN(lp)); set('fn-atc', fmtN(atc)); set('fn-chk', fmtN(chk)); set('fn-buy', fmtN(buy));
+  set('fn-clk-rate', 'CTR ' + (imp ? pct(clk, imp, 2) : '—'));
+  set('fn-lp-rate', pct(lp, clk) + ' dos cliques');
+  set('fn-atc-rate', pct(atc, lp) + ' das visitas');
+  set('fn-chk-rate', pct(chk, atc) + ' do carrinho');
+  set('fn-buy-rate', pct(buy, chk) + ' do checkout');
 }
 
 function renderMetaCards(mf) {
-  const imp = mf.reduce((s, d) => s + (d.impressoes || 0), 0);
-  const alc = mf.reduce((s, d) => s + (d.alcance || 0), 0);
-  const clk = mf.reduce((s, d) => s + (d.cliques || 0), 0);
-  const gas = mf.reduce((s, d) => s + (d.gasto || 0), 0);
-  document.getElementById('mc-imp').textContent  = fmtImpr(imp);
-  document.getElementById('mc-alc').textContent  = fmtImpr(alc);
-  document.getElementById('mc-clk').textContent  = fmtN(clk);
-  document.getElementById('mc-ctr').textContent  = imp ? pct(clk, imp, 2) : '—';
-  document.getElementById('mc-cpm').textContent  = imp ? fmtBRL2(gas / imp * 1000) : '—';
-  document.getElementById('mc-freq').textContent = alc ? (imp / alc).toFixed(2).replace('.', ',') + '×' : '—';
-  document.getElementById('meta-desc').textContent = 'Totais do período selecionado' + (metaUpdated ? ` · robô atualizado em ${metaUpdated}` : '') + (fonteMetaOk ? '' : ' · sem dados do robô');
+  const imp = soma(mf, 'impressoes'), alc = soma(mf, 'alcance'), clk = soma(mf, 'cliques'), gas = soma(mf, 'gasto');
+  const set = (id, v) => document.getElementById(id).textContent = v;
+  set('mc-gasto', fmtBRL2(gas)); set('mc-imp', fmtImpr(imp)); set('mc-alc', fmtImpr(alc)); set('mc-clk', fmtN(clk));
+  set('mc-ctr', imp ? pct(clk, imp, 2) : '—'); set('mc-cpm', imp ? fmtBRL2(gas / imp * 1000) : '—');
+  set('meta-desc', 'Totais do período selecionado' + (metaUpdated ? ` · robô atualizado em ${metaUpdated}` : '') + (fonteMetaOk ? '' : ' · sem dados do robô'));
 }
 
 function renderGoogleCards(gf) {
-  const gasto = gf.reduce((s, d) => s + (d.gasto || 0), 0);
-  const imp = gf.reduce((s, d) => s + (d.impressoes || 0), 0);
-  const clk = gf.reduce((s, d) => s + (d.cliques || 0), 0);
-  const conv = gf.reduce((s, d) => s + (d.conversoes || 0), 0);
-  document.getElementById('gc-gasto').textContent = fmtBRL2(gasto);
-  document.getElementById('gc-imp').textContent = fmtImpr(imp);
-  document.getElementById('gc-clk').textContent = fmtN(clk);
-  document.getElementById('gc-ctr').textContent = imp ? pct(clk, imp, 2) : '—';
-  document.getElementById('gc-cpc').textContent = clk ? fmtBRL2(gasto / clk) : '—';
-  document.getElementById('gc-conv').textContent = fmtConv(conv);
-  document.getElementById('gc-cpa').textContent = conv ? `custo por conversão ${fmtBRL2(gasto / conv)}` : '';
-  document.getElementById('google-desc').textContent = 'Totais do período selecionado' + (googleUpdated ? ` · robô atualizado em ${googleUpdated}` : '') + (fonteGoogleOk ? '' : ' · sem dados do robô');
+  const gasto = soma(gf, 'gasto'), imp = soma(gf, 'impressoes'), clk = soma(gf, 'cliques'), conv = soma(gf, 'conversoes');
+  const set = (id, v) => document.getElementById(id).textContent = v;
+  set('gc-gasto', fmtBRL2(gasto)); set('gc-imp', fmtImpr(imp)); set('gc-clk', fmtN(clk));
+  set('gc-ctr', imp ? pct(clk, imp, 2) : '—'); set('gc-cpc', clk ? fmtBRL2(gasto / clk) : '—'); set('gc-conv', fmtConv(conv));
+  set('gc-cpa', conv ? `custo por conversão ${fmtBRL2(gasto / conv)}` : '');
+  set('google-desc', 'Totais do período selecionado' + (fonteGoogleOk ? '' : ' · aguardando o script do Google Ads mandar os números'));
 }
 
-function renderFunnel(mf) {
-  const sum = k => mf.reduce((s, d) => s + (d[k] || 0), 0);
-  const imp = sum('impressoes'), clk = sum('cliques'), lp = sum('lpViews'), atc = sum('atc'), chk = sum('checkout'), buy = sum('compras');
-  document.getElementById('fn-imp').textContent = fmtImpr(imp);
-  document.getElementById('fn-clk').textContent = fmtN(clk);
-  document.getElementById('fn-lp').textContent  = lp ? fmtN(lp) : '—';
-  document.getElementById('fn-atc').textContent = fmtN(atc);
-  document.getElementById('fn-chk').textContent = chk ? fmtN(chk) : '—';
-  document.getElementById('fn-buy').textContent = fmtN(buy);
-  document.getElementById('fn-clk-rate').textContent = 'CTR ' + (imp ? pct(clk, imp, 2) : '—');
-  document.getElementById('fn-lp-rate').textContent  = pct(lp, clk) + ' dos cliques';
-  document.getElementById('fn-atc-rate').textContent = pct(atc, lp) + ' das visitas';
-  document.getElementById('fn-chk-rate').textContent = pct(chk, atc) + ' do carrinho';
-  document.getElementById('fn-buy-rate').textContent = pct(buy, chk) + ' do checkout';
+function renderTable(vf, mf, gf, pf) {
+  const ids = idsComOutro();
+  document.getElementById('tableHead').innerHTML = '<th style="text-align:left;">Data</th>' + ids.map(id => `<th>${nomeDe(id).replace('Camarote ', 'Cam. ').replace('Arquibancada ', 'Arq. ')}</th>`).join('') +
+    '<th>Valor vendido</th><th>Gasto Meta</th><th>Gasto Google</th><th>Página de compra</th><th>Carrinho</th><th>Checkout</th>';
+  const vMap = {}, mMap = {}, gMap = {}, pMap = {};
+  vf.forEach(d => vMap[d.iso] = d); mf.forEach(d => mMap[d.iso] = d); gf.forEach(d => gMap[d.iso] = d); pf.forEach(d => pMap[d.iso] = d);
+  const dias = [...new Set([...vf, ...mf, ...gf, ...pf].map(d => d.iso))].sort().reverse();
+  const tbody = document.getElementById('tableBody');
+  if (!dias.length) { tbody.innerHTML = `<tr><td colspan="${ids.length + 7}" class="muted" style="text-align:center;">Nenhum dado no período selecionado.</td></tr>`; return; }
+  tbody.innerHTML = dias.map(iso => {
+    const v = vMap[iso], m = mMap[iso], g = gMap[iso], p = pMap[iso];
+    return `<tr class="${v && v.total ? 'sale-row' : ''}">
+      <td>${labelFull(iso)}</td>
+      ${ids.map(id => `<td class="${v && v.q[id] ? '' : 'muted'}">${v && v.q[id] ? fmtN(v.q[id]) : '—'}</td>`).join('')}
+      <td>${v ? fmtBRL0(v.receita) : '—'}</td>
+      <td>${m ? fmtBRL2(m.gasto) : '—'}</td>
+      <td>${g ? fmtBRL2(g.gasto) : '—'}</td>
+      <td>${p ? fmtN(p.viewContent) : '—'}</td>
+      <td>${p ? fmtN(p.addToCart) : '—'}</td>
+      <td>${p ? fmtN(p.initiateCheckout) : '—'}</td>
+    </tr>`;
+  }).join('');
 }
 
 function renderInsight() {
   const box = document.getElementById('insightBox'), el = document.getElementById('insightText');
   box.classList.remove('warn');
-  if (!VENDAS_CSV_URL || VENDAS_CSV_URL.startsWith('COLE_AQUI')) {
-    box.classList.add('warn');
-    el.innerHTML = 'Planilha de vendas ainda não conectada. Publique a planilha como CSV e cole o link em <code>CONFIG.vendasCsvUrl</code> no HTML.';
-    return;
-  }
   if (!fonteVendasOk) {
     box.classList.add('warn');
-    el.innerHTML = 'Não consegui ler a planilha de vendas. Confira se ela está publicada na web como CSV e se o link está certo.' + (avisos.length ? ' ' + avisos.join(' ') : '');
+    el.innerHTML = 'Não consegui ler as vendas do site agora (planilha da Lime). Os números de mídia abaixo continuam valendo; tente recarregar em alguns minutos.';
     return;
   }
-  if (!vendasDiarias.length) {
-    el.innerHTML = 'Planilha conectada, ainda sem vendas lançadas.' + (avisos.length ? ' ' + avisos.join(' ') : '');
-    return;
+  const partes = [];
+  const tot = soma(vendasDiarias, 'total'), rec = soma(vendasDiarias, 'receita');
+  if (!tot) partes.push('Venda no site ligada desde <strong>25/11/2026</strong>. Ainda sem pedido pago na temporada.');
+  else {
+    const ult = vendasDiarias[vendasDiarias.length - 1];
+    partes.push(`Temporada: <strong>${fmtN(tot)}</strong> ingressos · <strong>${fmtBRL0(rec)}</strong> vendidos`);
+    partes.push(`Última venda: <strong>${labelFull(ult.iso)}</strong>`);
   }
-  const ult = vendasDiarias[vendasDiarias.length - 1];
-  const totClub = vendasDiarias.reduce((s, d) => s + d.club, 0), totLounge = vendasDiarias.reduce((s, d) => s + d.lounge, 0);
-  const totRec = vendasDiarias.reduce((s, d) => s + d.receita, 0);
-  const limite = parseISO(ult.iso); limite.setDate(limite.getDate() - 6); const limIso = isoOf(limite);
-  const ult7 = vendasDiarias.filter(d => d.iso >= limIso).reduce((s, d) => s + d.club + d.lounge, 0);
-  const diasPrimeiro = Math.round((parseISO(ult.iso) - parseISO(vendasDiarias[0].iso)) / 864e5) + 1;
-  const partes = [
-    `Último lançamento na planilha: <strong>${labelFull(ult.iso)}</strong>`,
-    `Total da temporada: <strong>${fmtN(totClub + totLounge)}</strong> ingressos (${fmtN(totClub)} ${P.club.nome} · <span class="purple">${fmtN(totLounge)} ${P.lounge.nome}</span>) · <strong>${fmtBRL0(totRec)}</strong>`,
-    `Ritmo nos 7 dias até o último lançamento: <strong>${(ult7 / 7).toFixed(1).replace('.', ',')}/dia</strong> · média desde a 1ª venda (${diasPrimeiro} dias): <strong>${((totClub + totLounge) / diasPrimeiro).toFixed(1).replace('.', ',')}/dia</strong>`,
-  ];
-  if (!fonteMetaOk) partes.push('<span style="color:#FF8888">Meta Ads sem dados (robô ainda não gerou o meta-data.json desta temporada).</span>');
-  if (!fonteGoogleOk) partes.push('<span style="color:#FF8888">Google Ads sem dados (robô ainda não gerou o google-ads-data.json).</span>');
-  if (avisos.length) partes.push('<span style="color:#FF8888">' + avisos.join(' ') + '</span>');
+  if (resumoApi && resumoApi.aguardandoPagamento) partes.push(`<span class="purple">${resumoApi.aguardandoPagamento} pedido(s) aguardando pagamento (Pix ou boleto)</span>`);
+  if (resumoApi && resumoApi.naoIdentificados) partes.push(`<span style="color:#FF8888">${resumoApi.naoIdentificados} pedido(s) com valor que não bate com nenhum ingresso (preço mudou? atualize a lista no script)</span>`);
+  if (vendasUpdated) partes.push(`vendas atualizadas em ${vendasUpdated}`);
+  if (!fonteMetaOk) partes.push('<span style="color:#FF8888">Meta Ads sem dados do robô.</span>');
   el.innerHTML = partes.join(' &nbsp;·&nbsp; ');
 }
 
 /* ═══════════════════════════════════════
    FILTRO
 ═══════════════════════════════════════ */
-function filterData(fromIso, toIso) {
-  return {
-    vf: vendasDiarias.filter(d => d.iso >= fromIso && d.iso <= toIso),
-    mf: metaDiario.filter(d => d.iso >= fromIso && d.iso <= toIso),
-    gf: googleDiario.filter(d => d.iso >= fromIso && d.iso <= toIso),
-  };
-}
-
 function applyFilter(fromDate, toDate, activeBtn) {
   document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
   if (activeBtn) document.getElementById(activeBtn).classList.add('active');
@@ -1024,18 +863,18 @@ function applyFilter(fromDate, toDate, activeBtn) {
   document.getElementById('dateFrom').value = fromIso;
   document.getElementById('dateTo').value = toIso;
   const anoFrom = fromDate.getFullYear(), anoTo = toDate.getFullYear();
-  document.getElementById('periodBadge').textContent = anoFrom === anoTo
-    ? `${fmtShort(fromDate)} – ${fmtShort(toDate)} ${anoTo}`
-    : `${fmtShort(fromDate)} ${anoFrom} – ${fmtShort(toDate)} ${anoTo}`;
-  document.getElementById('tl-sub').textContent = `${fromDate.toLocaleDateString('pt-BR')} a ${toDate.toLocaleDateString('pt-BR')} · Fonte: planilha Eventim`;
-
-  const { vf, mf, gf } = filterData(fromIso, toIso);
+  document.getElementById('periodBadge').textContent = anoFrom === anoTo ? `${fmtShort(fromDate)} – ${fmtShort(toDate)} ${anoTo}` : `${fmtShort(fromDate)} ${anoFrom} – ${fmtShort(toDate)} ${anoTo}`;
+  document.getElementById('tl-sub').textContent = `${fromDate.toLocaleDateString('pt-BR')} a ${toDate.toLocaleDateString('pt-BR')} · Fonte: pedidos pagos no site (Wix)`;
+  const f = arr => arr.filter(d => d.iso >= fromIso && d.iso <= toIso);
+  const vf = f(vendasDiarias), mf = f(metaDiario), gf = f(googleDiario), pf = f(pixelDiario);
   renderKPIs(vf, mf, gf);
-  renderCharts(vf, mf, gf);
-  renderTable(vf, mf, gf);
+  renderIngressos(vf);
+  renderFunilSite(vf, pf);
+  renderCharts(vf, mf, gf, pf, fromIso, toIso);
+  renderFunnelMeta(mf);
   renderMetaCards(mf);
   renderGoogleCards(gf);
-  renderFunnel(mf);
+  renderTable(vf, mf, gf, pf);
 }
 
 function setPreset(id) {
@@ -1047,65 +886,76 @@ function setPreset(id) {
   if (id === '30d') from = daysAgo(29);
   if (id === 'mes') from = new Date(today.getFullYear(), today.getMonth(), 1);
   if (id === 'tudo') {
-    const isos = [...vendasDiarias, ...metaDiario, ...googleDiario].map(d => d.iso);
+    const isos = [...vendasDiarias, ...metaDiario, ...googleDiario, ...pixelDiario].map(d => d.iso);
     from = isos.length ? parseISO(isos.reduce((a, b) => a < b ? a : b)) : daysAgo(29);
-    const maxIso = isos.length ? isos.reduce((a, b) => a > b ? a : b) : null;
-    to = maxIso && parseISO(maxIso) > today ? parseISO(maxIso) : today;
   }
   applyFilter(from, to, 'btn-' + id);
 }
 
 function applyCustomFilter() {
-  const from = parseISO(document.getElementById('dateFrom').value);
-  const to   = parseISO(document.getElementById('dateTo').value);
+  const from = parseISO(document.getElementById('dateFrom').value), to = parseISO(document.getElementById('dateTo').value);
   if (isNaN(from) || isNaN(to) || from > to) return;
   applyFilter(from, to, null);
 }
 
 function reaplicarFiltroAtivo() {
-  const activeBtn = document.querySelector('.btn-filter.active');
-  if (activeBtn && activeBtn.id === 'btn-tudo') { setPreset('tudo'); return; }
-  const from = parseISO(document.getElementById('dateFrom').value);
-  const to   = parseISO(document.getElementById('dateTo').value);
-  if (!isNaN(from) && !isNaN(to)) applyFilter(from, to, activeBtn ? activeBtn.id : null);
+  const a = document.querySelector('.btn-filter.active');
+  if (a) { setPreset(a.id.replace('btn-', '')); return; }
+  applyCustomFilter();
 }
 
 /* ═══════════════════════════════════════
    CARGA DOS DADOS
 ═══════════════════════════════════════ */
+function jsonp(url) {
+  return new Promise((resolve, reject) => {
+    const cb = '__dash' + Date.now();
+    const s = document.createElement('script');
+    const t = setTimeout(() => { delete window[cb]; s.remove(); reject(new Error('timeout')); }, 20000);
+    window[cb] = data => { clearTimeout(t); delete window[cb]; s.remove(); resolve(data); };
+    s.onerror = () => { clearTimeout(t); delete window[cb]; s.remove(); reject(new Error('jsonp')); };
+    s.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cb + '&t=' + Date.now();
+    document.head.appendChild(s);
+  });
+}
+
+async function carregarVendas() {
+  let api;
+  try {
+    const r = await fetch(VENDAS_API_URL + (VENDAS_API_URL.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    api = await r.json();
+  } catch (e) {
+    api = await jsonp(VENDAS_API_URL);
+  }
+  if (!api || !api.ok) throw new Error('resposta inválida');
+  resumoApi = api;
+  if (api.ingressos && api.ingressos.length) ingressos = api.ingressos;
+  vendasDiarias = montarVendas(api);
+  googleDiario = montarSimples(api.google);
+  fonteGoogleOk = googleDiario.length > 0;
+  vendasUpdated = api.updated || '';
+  fonteVendasOk = true;
+}
+
 async function carregarDados() {
   document.getElementById('loadingBadge').style.display = 'inline-flex';
   await Promise.allSettled([
-    fetch(VENDAS_CSV_URL + (VENDAS_CSV_URL.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' })
-      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-      .then(text => { vendasDiarias = montarVendas(parseCSV(text)); fonteVendasOk = true; })
-      .catch(e => { console.warn('Vendas: não carregou —', e.message); fonteVendasOk = false; }),
-
+    carregarVendas().catch(e => { console.warn('Vendas: não carregou —', e.message); fonteVendasOk = false; }),
     fetch(META_JSON_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(json => {
-        if (!json.data || !json.data.length) throw new Error('JSON meta vazio');
-        metaDiario = montarMeta(json); metaUpdated = json.updated || ''; fonteMetaOk = true;
-        document.getElementById('loadingBadge').title = '✓ Meta Ads via API · Atualizado: ' + metaUpdated;
+        metaDiario = montarMeta(json); metaUpdated = json.updated || ''; fonteMetaOk = metaDiario.length > 0;
+        pixelDiario = montarSimples(json.pixel); fontePixelOk = pixelDiario.length > 0;
       })
       .catch(e => { console.warn('Meta Ads: não carregou —', e.message); fonteMetaOk = false; }),
-
-    fetch(GOOGLE_JSON_URL + '?t=' + Date.now(), { cache: 'no-store' })
-      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(json => {
-        if (!json.data || !json.data.length) throw new Error('JSON google vazio');
-        googleDiario = montarMeta(json); googleUpdated = json.updated || ''; fonteGoogleOk = true;
-      })
-      .catch(e => { console.warn('Google Ads: não carregou —', e.message); fonteGoogleOk = false; }),
   ]);
   document.getElementById('loadingBadge').style.display = 'none';
 }
 
 async function initDashboard() {
-  document.getElementById('subtitleFull').textContent = `Camarote Duas Rodas · ${CONFIG.temporada} · Eventim (planilha) · Meta Ads · Google Ads`;
-  await carregarDados();
   initCharts();
-  renderGoals();
+  await carregarDados();
   renderInsight();
   setPreset('tudo');
   const dtStr = new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
@@ -1113,8 +963,7 @@ async function initDashboard() {
   document.getElementById('footerDate').textContent = dtStr;
 }
 
-/* Recarrega planilha e Meta a cada 5 minutos (a publicação do Google Sheets também atualiza a cada ~5 min) */
-setInterval(async () => { await carregarDados(); renderGoals(); renderInsight(); reaplicarFiltroAtivo(); }, 5 * 60 * 1000);
+setInterval(async () => { await carregarDados(); renderInsight(); reaplicarFiltroAtivo(); }, 5 * 60 * 1000);
 initDashboard();
 </script>
 </body>

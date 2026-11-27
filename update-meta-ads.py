@@ -81,11 +81,50 @@ for day in all_data:
         'checkout':   get_action_count(day.get('actions'),         'initiate_checkout'),
     })
 
+# ── Funil do site inteiro, pelo pixel [DR] REVISTA DUAS RODAS (não só quem veio de anúncio) ──
+# Conta os eventos que o GTM do 2rodasclub.com dispara: ViewContent (página de compra),
+# AddToCart, InitiateCheckout e Purchase. PageView não entra porque o pixel também está no site da revista.
+PIXEL_ID    = os.environ.get('META_PIXEL', '584624378945680')
+PIXEL_SINCE = os.environ.get('META_PIXEL_SINCE', '2026-11-26')   # GTM com o pixel novo publicado em 26/11/2026
+EVENTOS     = {'ViewContent': 'viewContent', 'AddToCart': 'addToCart', 'InitiateCheckout': 'initiateCheckout', 'Purchase': 'purchase'}
+pixel_dias, pixel_erro = {}, None
+try:
+    from datetime import timezone, timedelta
+    brt = timezone(timedelta(hours=-3))
+    ini = int(datetime.strptime(PIXEL_SINCE, '%Y-%m-%d').replace(tzinfo=brt).timestamp())
+    fim = int(datetime.now(tz=brt).timestamp())
+    passo = 7 * 86400   # a API devolve no máximo alguns dias de cada vez
+    t = ini
+    while t < fim:
+        q = urllib.parse.urlencode({'aggregation': 'event', 'start_time': t, 'end_time': min(fim, t + passo), 'access_token': TOKEN})
+        u = f'https://graph.facebook.com/v20.0/{PIXEL_ID}/stats?{q}'
+        while u:
+            with urllib.request.urlopen(u) as resp:
+                res = json.loads(resp.read())
+            for bloco in res.get('data', []):
+                st = bloco.get('start_time', '')
+                try:
+                    hora = datetime.strptime(st[:19], '%Y-%m-%dT%H:%M:%S').replace(tzinfo=timezone.utc).astimezone(brt)
+                except ValueError:
+                    continue
+                dia = hora.strftime('%Y-%m-%d')
+                for item in bloco.get('data', []):
+                    chave = EVENTOS.get(item.get('value'))
+                    if chave:
+                        d = pixel_dias.setdefault(dia, {'dataISO': dia, 'viewContent': 0, 'addToCart': 0, 'initiateCheckout': 0, 'purchase': 0})
+                        d[chave] += int(item.get('count', 0))
+            u = res.get('paging', {}).get('next')
+        t += passo
+except Exception as e:   # sem permissão no pixel ou API fora do ar: o resto do dashboard segue funcionando
+    pixel_erro = str(e)[:300]
+
 output = {
     'updated': datetime.now().strftime('%d/%m/%Y %H:%M'),
     'account': 'Duas Rodas | ' + ACCT,
     'filtro':  CAMPAIGN_CONTAINS or 'conta inteira',
     'data':    parsed,
+    'pixel':   sorted(pixel_dias.values(), key=lambda d: d['dataISO']),
+    'pixelErro': pixel_erro,
 }
 
 with open(OUT_FILE, 'w', encoding='utf-8') as f:
